@@ -1,4 +1,4 @@
-package mvc;
+package mvc.model;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -35,6 +35,17 @@ public class Modelo {
 	}
 
 	public ResultSet obtenerAutores() {
+		try {
+			String sql = "SELECT * FROM autor";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("Modelo: Error al ejecutar la sentencia");
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+	
+	public ResultSet obtenerEditoriales() {
 		try {
 			String sql = "SELECT * FROM autor";
 			resultado = sentencia.executeQuery(sql);

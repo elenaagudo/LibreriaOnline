@@ -1,18 +1,20 @@
-package mvc;
+package mvc.view;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Vista {
+import mvc.controller.Controlador;
+
+public class VistaConsola {
 
 	private Controlador controlador;
 	private Scanner sc;
 	private int opcion;
 	private ResultSet resultado;
 
-	public Vista(Controlador controlador) {
+	public VistaConsola(Controlador controlador) {
 		this.controlador = controlador;
 	}
 

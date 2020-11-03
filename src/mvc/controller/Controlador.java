@@ -1,6 +1,8 @@
-package mvc;
+package mvc.controller;
 
 import java.sql.ResultSet;
+
+import mvc.model.Modelo;
 
 public class Controlador {
 	private Modelo modelo;
