@@ -45,14 +45,4 @@ public class Modelo {
 		return resultado;
 	}
 	
-	public ResultSet obtenerEditoriales() {
-		try {
-			String sql = "SELECT * FROM autor";
-			resultado = sentencia.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia");
-			e.printStackTrace();
-		}
-		return resultado;
-	}
 }
