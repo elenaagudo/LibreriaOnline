@@ -29,14 +29,14 @@ public class ServicioMySQL {
 
 	}
 
-	public static synchronized ServicioMySQL obtenerServicio() {
+	public static synchronized ServicioMySQL getService() {
 		if (servicio == null) {
 			servicio = new ServicioMySQL();
 		}
 		return servicio;
 	}
 
-	public Connection obtenerConexion() {
+	public Connection getConnection() {
 		return conexion;
 	}
 }

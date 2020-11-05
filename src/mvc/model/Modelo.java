@@ -13,7 +13,7 @@ public class Modelo {
 
 	public Modelo() {
 		try {
-			conexion = ServicioMySQL.obtenerServicio().obtenerConexion();
+			conexion = ServicioMySQL.getService().getConnection();
 			sentencia = conexion.createStatement();
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear la sentencia");
@@ -21,7 +21,7 @@ public class Modelo {
 		}
 	}
 
-	public void terminar() {
+	public void close() {
 		try {
 			if (resultado != null) {
 				resultado.close();
@@ -34,15 +34,49 @@ public class Modelo {
 		}
 	}
 
-	public ResultSet obtenerAutores() {
+	public ResultSet getAuthors() {
 		try {
 			String sql = "SELECT * FROM autor";
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia");
+			System.out.println("Modelo: Error al ejecutar la sentencia de autores");
 			e.printStackTrace();
 		}
 		return resultado;
 	}
+	
+	public ResultSet getCategories() {
+		try {
+			String sql = "SELECT * FROM categoria";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("Modelo: Error al ejecutar la sentencia de categorias");
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+	
+	public ResultSet getEditorials() {
+		try {
+			String sql = "SELECT * FROM editorial";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("Modelo: Error al ejecutar la sentencia de editoriales");
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+	
+	public ResultSet getBooks() {
+		try {
+			String sql = "SELECT * FROM libro";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("Modelo: Error al ejecutar la sentencia de libros");
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+	
 	
 }

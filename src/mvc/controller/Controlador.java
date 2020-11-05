@@ -13,13 +13,28 @@ public class Controlador {
 	}
 
 	// El controlador hace un mapeo de los metodos del modelo
-	public ResultSet obtenerAutores() {
-		resultado = modelo.obtenerAutores();
+	public ResultSet getAuthors() {
+		resultado = modelo.getAuthors();
+		return resultado;
+	}
+	
+	public ResultSet getCategories() {
+		resultado = modelo.getCategories();
+		return resultado;
+	}
+	
+	public ResultSet getEditorials() {
+		resultado = modelo.getEditorials();
+		return resultado;
+	}
+	
+	public ResultSet getBooks() {
+		resultado = modelo.getBooks();
 		return resultado;
 	}
 
-	public void terminar() {
-		modelo.terminar();
+	public void close() {
+		modelo.close();
 	}
 
 }
