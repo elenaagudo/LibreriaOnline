@@ -15,7 +15,7 @@ public class SwingLauncher {
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
-				new VistaSwing(controlador);
+				VistaSwing vista = new VistaSwing(controlador);
 			}
 		});
 

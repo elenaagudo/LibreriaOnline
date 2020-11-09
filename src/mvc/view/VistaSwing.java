@@ -1,5 +1,6 @@
 package mvc.view;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,13 +26,16 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 
 	public VistaSwing(Controlador controlador) {
 		this.controlador = controlador;
-
+		
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER);
+		
 		JFrame frame = new JFrame("Listado autores");
-		frame.setLayout(null);
+		frame.setLayout(flowLayout);
 		frame.setBounds(400, 200, 350, 300);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		txtArea = new JTextArea(30, 4);
+		txtArea = new JTextArea(10,30);
 		listBtn = new JButton("Listar");
 		resetBtn = new JButton("Limpiar");
 		exitBtn = new JButton("Salir");
@@ -62,17 +66,19 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 			reset();
 		} else if (e.getSource() == exitBtn) {
 			closeApp();
+			System.exit(0);
 		}
 
 	}
 
 	public void listAuthors() {
 		resultado = controlador.getAuthors();
+		txtArea.setText("");
 		try {
 			while (resultado.next()) {
 				int cod_autor = resultado.getInt(1);
 				String nombre = resultado.getString(2);
-				txtArea.setText(cod_autor + ": " + nombre);
+				txtArea.append(cod_autor + ": " + nombre+"\n");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
