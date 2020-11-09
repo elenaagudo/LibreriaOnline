@@ -10,10 +10,13 @@ public class Modelo {
 	private Connection conexion;
 	private Statement sentencia;
 	private ResultSet resultado;
+	//string feedback
 
+	
+	//recibe el servicio, para pasarselo a getService()
 	public Modelo() {
 		try {
-			conexion = ServicioMySQL.getService().getConnection();
+			conexion = ServicioBBDD.getService().getConnection();
 			sentencia = conexion.createStatement();
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear la sentencia");
@@ -33,7 +36,8 @@ public class Modelo {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	public ResultSet getAuthors() {
 		try {
 			String sql = "SELECT * FROM autor";
@@ -77,6 +81,38 @@ public class Modelo {
 		}
 		return resultado;
 	}
+	
+	
+	/*
+	 * LOGICA DE NEGOCIO
+	 * */
+	//registrarAutor(String autor)
+		//sql de insertar
+		//retorno = executeUpdate(sql);
+		//feedback = (retorno > 0 ? "Registro de autor correcto" : "No ha sido posible registrar el autor");
+		//retornar feedback
+
+	//borrar autor(int codAutor)
+		//int retorno = 0;
+		//sql de borrar
+		//retorno = executeUpdate(sql)
+		//feedback = (retorno > 0 ? "Borrado de autor correcto" : "No ha sido posible borrar el autor");
+		//retornar feedback
+	
+	//obtenerAutor(int codAutor)
+		//sql de consultar
+		//resultado = executeQuery(sql)
+		//retornar resultado
+	
+	//obtenerAutores()
+		//sql de select *
+		
+	//editarAutor(int codAutor, String nombreAutor)
+		//retorno = 0
+		//sql de update
+		//retorno = executeUpdate(sql)
+		//feedback = (retorno > 0 ? "Edicion de autor correcto" : "No ha sido posible editar el autor")
+	
 	
 	
 }

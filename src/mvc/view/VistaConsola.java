@@ -56,10 +56,10 @@ public class VistaConsola {
 
 	public void getMenu() {
 		System.out.println("Elige una opcion: ");
-		System.out.println("1 - Listado autores");
-		System.out.println("2 - Listar categorias");
-		System.out.println("3 - Listar editoriales");
-		System.out.println("4 - Listado libros");
+		System.out.println("1 - Autores");
+		System.out.println("2 - Editoriales");
+		System.out.println("3 - Categorias");
+		System.out.println("4 - Libros");
 		System.out.println("0- Salir");
 	}
 
