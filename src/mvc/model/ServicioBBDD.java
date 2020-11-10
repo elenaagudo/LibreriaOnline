@@ -5,15 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ServicioBBDD {
-	//CONSTANTES con los nombres de las BBDD
-//	public static final String MYSQL = "mysql";
-//	public static final String ORACLE = "oracle";
-//	public static final String POSTRGRESQL = "postgresql";
-	
-	//DRIVERS
-//	private static final String DRIVER_MYSQL = "com.mysql.jdbc.Driver";
-	//oracle.jdbc.OracleDriver
-	//org.porgresql.Driver
+	public static final String MYSQL = "mysql";
+	private static final String DRIVER_MYSQL = "com.mysql.jdbc.Driver";
 	
 	//URL
 	//jdbc:oracle:thin:@localhost:1521:libreria

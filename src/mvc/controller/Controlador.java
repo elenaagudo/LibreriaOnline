@@ -17,6 +17,9 @@ public class Controlador {
 	}
 
 	// El controlador hace un mapeo de los metodos del modelo
+	public String insertAuthor(String nombreAutor) {
+		return "";
+	}
 	public ResultSet getAuthors() {
 		resultado = modelo.getAuthors();
 		return resultado;

@@ -13,7 +13,7 @@ public class Modelo {
 	//string feedback
 
 	
-	//recibe el servicio, para pasarselo a getService()
+	//recibira el servicio, para pasarselo a getService()
 	public Modelo() {
 		try {
 			conexion = ServicioBBDD.getService().getConnection();
