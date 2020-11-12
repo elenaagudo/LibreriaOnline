@@ -1,10 +1,12 @@
 package mvc.view;
 
-import java.sql.ResultSet;
+//import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Vector;
 
 import mvc.controller.Controlador;
+import mvc.model.Autor;
 
 public class VistaAutor {
 
@@ -12,7 +14,8 @@ public class VistaAutor {
 	private Scanner sc = new Scanner(System.in);
 	private int opcion;
 
-	private ResultSet resultado;
+	// private ResultSet resultado;
+	private String feedback;
 
 	public VistaAutor(Controlador controlador) {
 		this.controlador = controlador;
@@ -71,27 +74,55 @@ public class VistaAutor {
 	}
 
 	public void insert() {
-		System.out.println("Insertar: EN CONSTRUCCIÓN");
-		insertForm();
-		String nombreAutor = sc.nextLine();
-		controlador.insertAuthor(nombreAutor);
-	}
-
-	public void insertForm() {
 		System.out.println("Introduce el nombre del autor");
 		System.out.println("Maximo 45 caracteres");
+		sc.nextLine();
+		String nombreAutor = sc.nextLine();
+		feedback = controlador.insertAuthor(nombreAutor);
+		System.out.println(feedback);
 	}
 
 	public void update() {
-		System.out.println("Editar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo del autor que quieres editar");
+		int codigoAutor = 0;
+		try {
+			codigoAutor = sc.nextInt();
+			System.out.println("Introduce el nuevo nombre");
+			System.out.println("Maximo 45 caracteres");
+			sc.nextLine();
+			String nombreAutor = sc.nextLine();
+			feedback = controlador.updateAuthor(codigoAutor, nombreAutor);
+			System.out.println(feedback);
+		} catch (InputMismatchException e) {
+		}
+
 	}
 
 	public void list() {
-		System.out.println("Listar: EN CONSTRUCCIÓN");
+		Vector<Autor> autores = controlador.listAuthors();
+		System.out.println("\n***** LISTADO DE AUTORES *****");
+		for (Autor autor : autores) {
+			System.out.println(autor.getCodigoAutor() + " - " + autor.getNombreAutor());
+		}
+		System.out.println("***** FIN LISTADO AUTORES *****\n");
 	}
 
 	public void delete() {
-		System.out.println("Borrar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo del autor que quieres borrar");
+		System.out.println("0 - Salir");
+		int codigoAutor = 0;
+		try {
+			codigoAutor = sc.nextInt();
+			if(codigoAutor != 0) {
+				feedback = controlador.deleteAuthor(codigoAutor);
+				System.out.println(feedback);
+			}
+		} catch (InputMismatchException e) {
+			sc.nextLine();
+			System.out.println("No es una opcion valida\n");
+		}
 	}
 
 }

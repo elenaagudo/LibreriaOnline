@@ -61,7 +61,7 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// if(e.getActionCommand().equals("terminar"))
 		if (e.getSource() == listBtn) {
-			listAuthors();
+			//listAuthors();
 		} else if (e.getSource() == resetBtn) {
 			reset();
 		} else if (e.getSource() == exitBtn) {
@@ -71,7 +71,7 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 
 	}
 
-	public void listAuthors() {
+	/*public void listAuthors() {
 		resultado = controlador.getAuthors();
 		txtArea.setText("");
 		try {
@@ -83,7 +83,7 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	// reset
 	public void reset() {

@@ -1,64 +1,52 @@
 package mvc.controller;
 
-import java.sql.ResultSet;
+import java.util.Vector;
 
+import mvc.model.Autor;
 import mvc.model.Modelo;
 
 public class Controlador {
 	private Modelo modelo;
-	private ResultSet resultado;
-	// int opcion
-	// scanner
-
-	// modelo, vista
+	private Vector<Autor> autores = new Vector<Autor>();
+	private String feedback;
 
 	public Controlador(Modelo modelo) {
 		this.modelo = modelo;
 	}
 
 	// El controlador hace un mapeo de los metodos del modelo
+	
+	/*
+	 * AUTORES
+	 * 
+	 * */
 	public String insertAuthor(String nombreAutor) {
-		return "";
+		feedback = modelo.insertAuthor(nombreAutor);
+		return feedback;
 	}
-	public ResultSet getAuthors() {
-		resultado = modelo.getAuthors();
-		return resultado;
+	
+	public String deleteAuthor(int codigoAutor) {
+		feedback = modelo.deleteAuthor(codigoAutor);
+		return feedback;
 	}
-
-	public ResultSet getCategories() {
-		resultado = modelo.getCategories();
-		return resultado;
+	
+	public String updateAuthor(int codigoAutor, String nombreAutor) {
+		feedback = modelo.updateAuthor(codigoAutor, nombreAutor);
+		return feedback;
 	}
-
-	public ResultSet getEditorials() {
-		resultado = modelo.getEditorials();
-		return resultado;
+	
+	public Vector<Autor> listAuthors(){
+		autores = modelo.listAuthors();
+		return autores;
 	}
-
-	public ResultSet getBooks() {
-		resultado = modelo.getBooks();
-		return resultado;
-	}
-
+	
 	public void close() {
 		modelo.close();
 	}
-
-	// getAccion controla desde el principio
-
-	// obtenerOpcion
-
-	// mantenerAutores
-	// caso1: mostrarFormularioNuevoAutor
-	// teclado.nextLine()
-	// vista.mostrarFeedback(modelo.registrarAutor(teclado.nextLine()))
-	// caso2: vista.mostrarAutores(modelo.obtenerAutores())
-	// vista.formularioBorrarAutor()
-	// teclado.nextLine()
-	// vista.mostrarFeedback(modelo.borrarAutor(teclado.nextInt()))
-	// caso3:mostrarAutores()
-	// mostrarFormularioEditarAutor()
-	// teclado.nextLine()
-	// caso4:mostrarAutores()
+	
+	/*
+	 * EDITORIALES
+	 * 
+	 * */
 
 }

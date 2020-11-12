@@ -4,13 +4,18 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 public class Modelo {
 
 	private Connection conexion;
 	private Statement sentencia;
 	private ResultSet resultado;
-	//string feedback
+	private Autor autor;
+	private Editorial editorial;
+	private Vector<Autor> autores = new Vector<Autor>();
+	private Vector<Editorial> editoriales;
+	private String feedback;
 
 	
 	//recibira el servicio, para pasarselo a getService()
@@ -18,6 +23,7 @@ public class Modelo {
 		try {
 			conexion = ServicioBBDD.getService().getConnection();
 			sentencia = conexion.createStatement();
+			Autor.setConnection(sentencia, resultado);
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear la sentencia");
 			e.printStackTrace();
@@ -37,82 +43,77 @@ public class Modelo {
 		}
 	}
 	
-	
-	public ResultSet getAuthors() {
-		try {
-			String sql = "SELECT * FROM autor";
-			resultado = sentencia.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia de autores");
-			e.printStackTrace();
-		}
-		return resultado;
+	/*
+	 * AUTORES
+	 * 
+	 * */
+	public String insertAuthor(String nombreAutor) {
+		autor = new Autor(nombreAutor);
+		feedback = autor.insert();
+		return feedback;
 	}
 	
-	public ResultSet getCategories() {
+	public String deleteAuthor(int codigoAutor) {
+		
 		try {
-			String sql = "SELECT * FROM categoria";
-			resultado = sentencia.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia de categorias");
-			e.printStackTrace();
+			autores = Autor.searchById(codigoAutor);
+			autor = autores.get(0);
+			autor.delete();
+		}catch(ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un autor con ese codigo\n";
 		}
-		return resultado;
+		return feedback;
 	}
 	
-	public ResultSet getEditorials() {
-		try {
-			String sql = "SELECT * FROM editorial";
-			resultado = sentencia.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia de editoriales");
-			e.printStackTrace();
-		}
-		return resultado;
+	public String updateAuthor(int codigoAutor, String nombreAutor) {
+		autores = Autor.searchById(codigoAutor);
+		autor = autores.get(0);
+		autor.setNombreAutor(nombreAutor);
+		feedback = autor.update();
+		return feedback;
 	}
 	
-	public ResultSet getBooks() {
-		try {
-			String sql = "SELECT * FROM libro";
-			resultado = sentencia.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println("Modelo: Error al ejecutar la sentencia de libros");
-			e.printStackTrace();
-		}
-		return resultado;
+	public Vector<Autor> listAuthors() {
+		autores = Autor.list();
+		return autores;
 	}
-	
 	
 	/*
-	 * LOGICA DE NEGOCIO
+	 * EDITORIALES
+	 * 
 	 * */
-	//registrarAutor(String autor)
-		//sql de insertar
-		//retorno = executeUpdate(sql);
-		//feedback = (retorno > 0 ? "Registro de autor correcto" : "No ha sido posible registrar el autor");
-		//retornar feedback
-
-	//borrar autor(int codAutor)
-		//int retorno = 0;
-		//sql de borrar
-		//retorno = executeUpdate(sql)
-		//feedback = (retorno > 0 ? "Borrado de autor correcto" : "No ha sido posible borrar el autor");
-		//retornar feedback
+	public String insertEditorial(String nombreEditorial) {
+		editorial.setNombreEditorial(nombreEditorial);
+		feedback = editorial.insert();
+		return feedback;
+	}
 	
-	//obtenerAutor(int codAutor)
-		//sql de consultar
-		//resultado = executeQuery(sql)
-		//retornar resultado
+	public String updateEditorial(int codigoEditorial, String nombreEditorial) {
+		editorial.setCodigoEditorial(codigoEditorial);
+		editorial.setNombreEditorial(nombreEditorial);
+		feedback = editorial.update();
+		return feedback;
+	}
 	
-	//obtenerAutores()
-		//sql de select *
-		
-	//editarAutor(int codAutor, String nombreAutor)
-		//retorno = 0
-		//sql de update
-		//retorno = executeUpdate(sql)
-		//feedback = (retorno > 0 ? "Edicion de autor correcto" : "No ha sido posible editar el autor")
+	public String deleteEditorial(int codigoEditorial) {
+		editorial.setCodigoEditorial(codigoEditorial);
+		feedback = editorial.delete();
+		return feedback;
+	}
 	
+	public Vector<Editorial> listEditorial(){
+		editoriales = Editorial.list();
+		return editoriales;
+	}
 	
+	public Vector<Editorial> listEditorialById(){
+		editoriales = editorial.listById();
+		return editoriales;
+	}
+	
+	public Vector<Editorial> listEditorialByName(){
+		editoriales = editorial.listByName();
+		return editoriales;
+	}
 	
 }
