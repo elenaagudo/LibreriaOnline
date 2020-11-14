@@ -3,17 +3,23 @@ package mvc.controller;
 import java.util.Vector;
 
 import mvc.model.Autor;
+import mvc.model.Editorial;
 import mvc.model.Modelo;
 
 public class Controlador {
 	private Modelo modelo;
 	private Vector<Autor> autores = new Vector<Autor>();
+	private Vector<Editorial> editoriales;
 	private String feedback;
 
 	public Controlador(Modelo modelo) {
 		this.modelo = modelo;
 	}
 
+	public void close() {
+		modelo.close();
+	}
+	
 	// El controlador hace un mapeo de los metodos del modelo
 	
 	/*
@@ -40,13 +46,24 @@ public class Controlador {
 		return autores;
 	}
 	
-	public void close() {
-		modelo.close();
-	}
-	
 	/*
 	 * EDITORIALES
 	 * 
 	 * */
-
+	public String insertEditorial(String nombreEditorial) {
+		feedback = modelo.insertEditorial(nombreEditorial);
+		return feedback;
+	}
+	public String deleteEditorial(int codigoEditorial) {
+		feedback = modelo.deleteEditorial(codigoEditorial);
+		return feedback;
+	}
+	public String updateEditorial(int codigoEditorial, String nombreEditorial) {
+		feedback = modelo.updateEditorial(codigoEditorial, nombreEditorial);
+		return feedback;
+	}
+	public Vector<Editorial> listEditorials(){
+		editoriales = modelo.listEditorials();
+		return editoriales;
+	}
 }

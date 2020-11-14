@@ -23,7 +23,7 @@ public class Editorial {
 		return codigoEditorial;
 	}
 
-	public void setCodigoEditorial(int codigoEditorial) {
+	private void setCodigoEditorial(int codigoEditorial) {
 		this.codigoEditorial = codigoEditorial;
 	}
 
@@ -46,7 +46,6 @@ public class Editorial {
 
 	// METODOS CRUD
 	private int retorno;
-	private static Vector<Editorial> editoriales;
 
 	// INSERT
 	public String insert() {
@@ -62,7 +61,7 @@ public class Editorial {
 	// UPDATE
 	public String update() {
 		try {
-			String sql = "update editorial set nombre=" + getNombreEditorial() + "where cod_editorial="
+			String sql = "update editorial set nombre='" + getNombreEditorial() + "' where cod_editorial="
 					+ getCodigoEditorial();
 			retorno = sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -85,42 +84,42 @@ public class Editorial {
 	// READ
 	// read all rows
 	public static Vector<Editorial> list() {
-		try {
-			String sql = "select * from editorial";
-			resultado = sentencia.executeQuery(sql);
-			editoriales = resultSetToVector();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Vector<Editorial> editoriales = new Vector<Editorial>();
+		String sql = "select * from editorial";
+		editoriales = search(sql);
 		return editoriales;
 	}
 
 	// search by id
-	public Vector<Editorial> listById() {
-		try {
-			String sql = "select * from editorial where cod_editorial=" + getCodigoEditorial();
-			resultado = sentencia.executeQuery(sql);
-			editoriales = resultSetToVector();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public static Vector<Editorial> searchById(int codigoEditorial) {
+		Vector<Editorial> editoriales = new Vector<Editorial>();
+		String sql = "select * from editorial where cod_editorial=" + codigoEditorial;
+		editoriales = search(sql);
 		return editoriales;
 	}
 
 	// search by name
-	public Vector<Editorial> listByName() {
-		try {
-			String sql = "sqlect * from editorial where nombre=" + getNombreEditorial();
-			resultado = sentencia.executeQuery(sql);
-			editoriales = resultSetToVector();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public static Vector<Editorial> searchByName(String nombreEditorial) {
+		Vector<Editorial> editoriales = new Vector<Editorial>();
+		String sql = "select * from editorial where nombre=" + nombreEditorial;
+		editoriales = search(sql);
 		return editoriales;
 	}
 
 	// UTILITIES
+	public static Vector<Editorial> search(String sql){
+		Vector<Editorial> editoriales = new Vector<Editorial>();
+		try {
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		editoriales = resultSetToVector();
+		return editoriales;
+	}
+	
 	public static Vector<Editorial> resultSetToVector() {
+		Vector<Editorial> editoriales = new Vector<Editorial>();
 		Editorial editorial;
 		
 		try {

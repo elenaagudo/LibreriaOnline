@@ -8,6 +8,10 @@ import mvc.controller.Controlador;
 public class MenuPrincipal {
 	
 	private Controlador controlador;
+	private VistaAutor vistaAutor;
+	private VistaCategoria vistaCategoria;
+	private VistaEditorial vistaEditorial;
+	private VistaLibro vistaLibro;
 	private Scanner sc;
 	private int opcion;
 
@@ -22,19 +26,19 @@ public class MenuPrincipal {
 		do {
 			switch (opcion) {
 			case 1:
-				VistaAutor vistaAutor = new VistaAutor(controlador);
+				vistaAutor = new VistaAutor(controlador);
 				vistaAutor.init();
 				break;
 			case 2:
-				VistaCategoria vistaCategoria = new VistaCategoria(controlador);
+				vistaCategoria = new VistaCategoria(controlador);
 				vistaCategoria.init();
 				break;
 			case 3:
-				VistaEditorial vistaEditorial = new VistaEditorial(controlador);
+				vistaEditorial = new VistaEditorial(controlador);
 				vistaEditorial.init();
 				break;
 			case 4:
-				VistaLibro vistaLibro = new VistaLibro(controlador);
+				vistaLibro = new VistaLibro(controlador);
 				vistaLibro.init();
 				break;
 			case 0:
@@ -61,7 +65,7 @@ public class MenuPrincipal {
 		System.out.println("2 - Categorias");
 		System.out.println("3 - Editoriales");
 		System.out.println("4 - Libros");
-		System.out.println("0- Salir");
+		System.out.println("0 - Salir");
 	}
 	
 	public void getOption() {

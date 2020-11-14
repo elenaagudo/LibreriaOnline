@@ -1,17 +1,18 @@
 package mvc.view;
 
-import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Vector;
 
 import mvc.controller.Controlador;
+import mvc.model.Editorial;
 
 public class VistaEditorial {
 	private Controlador controlador;
-	private Scanner sc;
+	private Scanner sc = new Scanner(System.in);
 	private int opcion;
 
-	private ResultSet resultado;
+	private String feedback;
 
 	public VistaEditorial(Controlador controlador) {
 		this.controlador = controlador;
@@ -60,7 +61,6 @@ public class VistaEditorial {
 	}
 
 	public void getOption() {
-		sc = new Scanner(System.in);
 		System.out.println("Introduzca una opcion: ");
 		try {
 			opcion = sc.nextInt();
@@ -70,19 +70,54 @@ public class VistaEditorial {
 	}
 
 	public void insert() {
-		System.out.println("Insertar: EN CONSTRUCCIÓN");
+		System.out.println("Introduce el nombre de la editorial");
+		System.out.println("Maximo 45 caracteres");
+		sc.nextLine();
+		String nombreEditorial = sc.nextLine();
+		feedback = controlador.insertEditorial(nombreEditorial);
+		System.out.println(feedback);
 	}
 
 	public void update() {
-		System.out.println("Editar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo de la editorial que quieres editar");
+		int codigoEditorial = 0;
+		try {
+			codigoEditorial = sc.nextInt();
+			System.out.println("Introduce el nuevo nombre");
+			System.out.println("Maximo 45 caracteres");
+			sc.nextLine();
+			String nombreEditorial = sc.nextLine();
+			feedback = controlador.updateEditorial(codigoEditorial, nombreEditorial);
+			System.out.println(feedback);
+		} catch (InputMismatchException e) {
+		}
 	}
 
 	public void list() {
-		System.out.println("Listar: EN CONSTRUCCIÓN");
+		Vector<Editorial> editoriales = controlador.listEditorials();
+		System.out.println("\n***** LISTADO DE EDITORIALES *****");
+		for (Editorial editorial : editoriales) {
+			System.out.println(editorial.getCodigoEditorial() + " - " + editorial.getNombreEditorial());
+		}
+		System.out.println("***** FIN LISTADO EDITORIALES *****\n");
 	}
 
 	public void delete() {
-		System.out.println("Borrar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo de la editorial que quieres borrar");
+		System.out.println("0 - Salir");
+		int codigoEditorial = 0;
+		try {
+			codigoEditorial = sc.nextInt();
+			if(codigoEditorial != 0) {
+				feedback = controlador.deleteEditorial(codigoEditorial);
+				System.out.println(feedback);
+			}
+		} catch (InputMismatchException e) {
+			sc.nextLine();
+			System.out.println("No es una opcion valida\n");
+		}
 	}
 
 }

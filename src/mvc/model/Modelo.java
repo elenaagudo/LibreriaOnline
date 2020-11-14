@@ -24,6 +24,7 @@ public class Modelo {
 			conexion = ServicioBBDD.getService().getConnection();
 			sentencia = conexion.createStatement();
 			Autor.setConnection(sentencia, resultado);
+			Editorial.setConnection(sentencia, resultado);
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear la sentencia");
 			e.printStackTrace();
@@ -54,11 +55,10 @@ public class Modelo {
 	}
 	
 	public String deleteAuthor(int codigoAutor) {
-		
 		try {
 			autores = Autor.searchById(codigoAutor);
 			autor = autores.get(0);
-			autor.delete();
+			feedback = autor.delete();
 		}catch(ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe un autor con ese codigo\n";
 		}
@@ -83,36 +83,32 @@ public class Modelo {
 	 * 
 	 * */
 	public String insertEditorial(String nombreEditorial) {
-		editorial.setNombreEditorial(nombreEditorial);
+		editorial = new Editorial(nombreEditorial);
 		feedback = editorial.insert();
 		return feedback;
 	}
 	
 	public String updateEditorial(int codigoEditorial, String nombreEditorial) {
-		editorial.setCodigoEditorial(codigoEditorial);
+		editoriales = Editorial.searchById(codigoEditorial);
+		editorial = editoriales.get(0);
 		editorial.setNombreEditorial(nombreEditorial);
 		feedback = editorial.update();
 		return feedback;
 	}
 	
 	public String deleteEditorial(int codigoEditorial) {
-		editorial.setCodigoEditorial(codigoEditorial);
-		feedback = editorial.delete();
+		try {
+			editoriales = Editorial.searchById(codigoEditorial);
+			editorial = editoriales.get(0);
+			feedback = editorial.delete();
+		}catch(ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un autor con ese codigo\n";
+		}
 		return feedback;
 	}
 	
-	public Vector<Editorial> listEditorial(){
+	public Vector<Editorial> listEditorials(){
 		editoriales = Editorial.list();
-		return editoriales;
-	}
-	
-	public Vector<Editorial> listEditorialById(){
-		editoriales = editorial.listById();
-		return editoriales;
-	}
-	
-	public Vector<Editorial> listEditorialByName(){
-		editoriales = editorial.listByName();
 		return editoriales;
 	}
 	

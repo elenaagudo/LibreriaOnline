@@ -100,9 +100,9 @@ public class Autor {
 
 	// READ
 	// search by name
-	public static Vector<Autor> searchByName(int codigoAutor) {
+	public static Vector<Autor> searchByName(String nombreAutor) {
 		Vector<Autor> autores = new Vector<Autor>();
-		String sql = "select * from autor where nombre=" + codigoAutor;
+		String sql = "select * from autor where nombre=" + nombreAutor;
 		autores = search(sql);
 		return autores;
 	}

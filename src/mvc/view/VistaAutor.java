@@ -1,6 +1,5 @@
 package mvc.view;
 
-//import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Vector;
@@ -14,7 +13,6 @@ public class VistaAutor {
 	private Scanner sc = new Scanner(System.in);
 	private int opcion;
 
-	// private ResultSet resultado;
 	private String feedback;
 
 	public VistaAutor(Controlador controlador) {
@@ -96,7 +94,6 @@ public class VistaAutor {
 			System.out.println(feedback);
 		} catch (InputMismatchException e) {
 		}
-
 	}
 
 	public void list() {
