@@ -1,10 +1,11 @@
 package mvc.view;
 
-import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Vector;
 
 import mvc.controller.Controlador;
+import mvc.model.Categoria;
 
 public class VistaCategoria {
 
@@ -12,7 +13,7 @@ public class VistaCategoria {
 	private Scanner sc;
 	private int opcion;
 
-	private ResultSet resultado;
+	private String feedback;
 
 	public VistaCategoria(Controlador controlador) {
 		this.controlador = controlador;
@@ -71,19 +72,54 @@ public class VistaCategoria {
 	}
 
 	public void insert() {
-		System.out.println("Insertar: EN CONSTRUCCIÓN");
+		System.out.println("Introduce el nombre de la categoria");
+		System.out.println("Maximo 45 caracteres");
+		sc.nextLine();
+		String nombreCategoria = sc.nextLine();
+		feedback = controlador.insertCategory(nombreCategoria);
+		System.out.println(feedback);
 	}
 
 	public void update() {
-		System.out.println("Editar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo de la categoria que quieres editar");
+		int codigoCategoria = 0;
+		try {
+			codigoCategoria = sc.nextInt();
+			System.out.println("Introduce el nuevo nombre");
+			System.out.println("Maximo 45 caracteres");
+			sc.nextLine();
+			String nombreCategoria = sc.nextLine();
+			feedback = controlador.updateCategory(codigoCategoria, nombreCategoria);
+			System.out.println(feedback);
+		} catch (InputMismatchException e) {
+		}
 	}
 
 	public void list() {
-		System.out.println("Listar: EN CONSTRUCCIÓN");
+		Vector<Categoria> categorias = controlador.listCategories();
+		System.out.println("\n***** LISTADO DE CATEGORIAS *****");
+		for (Categoria categoria : categorias) {
+			System.out.println(categoria.getCodigoCategoria() + " - " + categoria.getNombreCategoria());
+		}
+		System.out.println("***** FIN LISTADO CATEGORIAS *****\n");
 	}
 
 	public void delete() {
-		System.out.println("Borrar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el codigo de la categoria que quieres borrar");
+		System.out.println("0 - Salir");
+		int codigoCategoria = 0;
+		try {
+			codigoCategoria = sc.nextInt();
+			if(codigoCategoria != 0) {
+				feedback = controlador.deleteCategory(codigoCategoria);
+				System.out.println(feedback);
+			}
+		} catch (InputMismatchException e) {
+			sc.nextLine();
+			System.out.println("No es una opcion valida\n");
+		}
 	}
 	
 }

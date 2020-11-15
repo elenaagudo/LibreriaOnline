@@ -12,7 +12,7 @@ public class VistaLibro {
 	private Scanner sc;
 	private int opcion;
 
-	private ResultSet resultado;
+	private String feedback;
 
 	public VistaLibro(Controlador controlador) {
 		this.controlador = controlador;

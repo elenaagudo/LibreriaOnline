@@ -13,8 +13,12 @@ public class Modelo {
 	private ResultSet resultado;
 	private Autor autor;
 	private Editorial editorial;
-	private Vector<Autor> autores = new Vector<Autor>();
+	private Categoria categoria;
+	//private Libro libro;
+	private Vector<Autor> autores;
 	private Vector<Editorial> editoriales;
+	private Vector<Categoria> categorias;
+	//private Vector<Libro> libros;
 	private String feedback;
 
 	
@@ -24,6 +28,7 @@ public class Modelo {
 			conexion = ServicioBBDD.getService().getConnection();
 			sentencia = conexion.createStatement();
 			Autor.setConnection(sentencia, resultado);
+			Categoria.setConnection(sentencia, resultado);
 			Editorial.setConnection(sentencia, resultado);
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear la sentencia");
@@ -54,6 +59,14 @@ public class Modelo {
 		return feedback;
 	}
 	
+	public String updateAuthor(int codigoAutor, String nombreAutor) {
+		autores = Autor.searchById(codigoAutor);
+		autor = autores.get(0);
+		autor.setNombreAutor(nombreAutor);
+		feedback = autor.update();
+		return feedback;
+	}
+	
 	public String deleteAuthor(int codigoAutor) {
 		try {
 			autores = Autor.searchById(codigoAutor);
@@ -62,14 +75,6 @@ public class Modelo {
 		}catch(ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe un autor con ese codigo\n";
 		}
-		return feedback;
-	}
-	
-	public String updateAuthor(int codigoAutor, String nombreAutor) {
-		autores = Autor.searchById(codigoAutor);
-		autor = autores.get(0);
-		autor.setNombreAutor(nombreAutor);
-		feedback = autor.update();
 		return feedback;
 	}
 	
@@ -110,6 +115,40 @@ public class Modelo {
 	public Vector<Editorial> listEditorials(){
 		editoriales = Editorial.list();
 		return editoriales;
+	}
+	
+	/*
+	 * CATEGORIAS
+	 * 
+	 * */
+	public String insertCategory(String nombreCategoria) {
+		categoria = new Categoria(nombreCategoria);
+		feedback = categoria.insert();
+		return feedback;
+	}
+	
+	public String updateCategory(int codigoCategoria, String nombreCategoria) {
+		categorias = Categoria.searchById(codigoCategoria);
+		categoria = categorias.get(0);
+		categoria.setNombreCategoria(nombreCategoria);
+		feedback = categoria.update();
+		return feedback;
+	}
+	
+	public String deleteCategory(int codigoCategoria) {
+		try {
+			categorias = Categoria.searchById(codigoCategoria);
+			categoria = categorias.get(0);
+			feedback = categoria.delete();
+		}catch(ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe una categoria con ese codigo\n";
+		}
+		return feedback;
+	}
+	
+	public Vector<Categoria> listCategories(){
+		categorias = Categoria.list();
+		return categorias;
 	}
 	
 }
