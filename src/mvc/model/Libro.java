@@ -15,7 +15,7 @@ public class Libro {
 	private int codigoCategoria;
 	private int codigoEditorial;
 
-	//en el constructor meter todos los campos
+	// en el constructor meter todos los campos
 	public Libro(int isbn, String titulo, double precio, int stock, int codigoCategoria, int codigoEditorial) {
 		this.isbn = isbn;
 		this.titulo = titulo;
@@ -72,7 +72,6 @@ public class Libro {
 	public void setCodigoEditorial(int codigoEditorial) {
 		this.codigoEditorial = codigoEditorial;
 	}
-
 
 	// INTEGRACION CON LA BBDD
 	private static Statement sentencia;
@@ -133,39 +132,35 @@ public class Libro {
 	// READ
 	// read all rows
 	public static Vector<Libro> list() {
-		Vector<Libro> libros = new Vector<Libro>();
 		String sql = "select * from libro";
-		libros = search(sql);
+		Vector<Libro> libros = search(sql);
 		return libros;
 	}
 
 	// READ
 	// search by id
 	public static Vector<Libro> searchById(int isbn) {
-		Vector<Libro> libros = new Vector<Libro>();
 		String sql = "select * from libro where isbn=" + isbn;
-		libros = search(sql);
+		Vector<Libro> libros = search(sql);
 		return libros;
 	}
 
 	// READ
 	// search by name
 	public static Vector<Libro> searchByName(String titulo) {
-		Vector<Libro> libros = new Vector<Libro>();
-		String sql = "select * from libro where titulo='"+titulo+"'";
-		libros = search(sql);
+		String sql = "select * from libro where titulo='" + titulo + "'";
+		Vector<Libro> libros = search(sql);
 		return libros;
 	}
 
 	// UTILITIES
 	public static Vector<Libro> search(String sql) {
-		Vector<Libro> libros = new Vector<Libro>();
 		try {
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		libros = resultSetToVector();
+		Vector<Libro> libros = resultSetToVector();
 		return libros;
 	}
 
@@ -173,7 +168,7 @@ public class Libro {
 		Vector<Libro> libros = new Vector<Libro>();
 		Libro libro;
 		try {
-			while(resultado.next()) {
+			while (resultado.next()) {
 				int isbn = resultado.getInt(1);
 				String titulo = resultado.getString(2);
 				double precio = resultado.getDouble(3);
@@ -183,7 +178,7 @@ public class Libro {
 				libro = new Libro(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
 				libros.add(libro);
 			}
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return libros;

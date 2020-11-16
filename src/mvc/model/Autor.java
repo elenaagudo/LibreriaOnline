@@ -83,39 +83,35 @@ public class Autor {
 	// READ
 	// read all rows
 	public static Vector<Autor> list() {
-		Vector<Autor> autores = new Vector<Autor>();
 		String sql = "select * from autor";
-		autores = search(sql);
+		Vector<Autor> autores = search(sql);
 		return autores;
 	}
 
 	// READ
 	// search by id
 	public static Vector<Autor> searchById(int codigoAutor) {
-		Vector<Autor> autores = new Vector<Autor>();
 		String sql = "select * from autor where cod_autor=" + codigoAutor;
-		autores = search(sql);
+		Vector<Autor> autores = search(sql);
 		return autores;
 	}
 
 	// READ
 	// search by name
 	public static Vector<Autor> searchByName(String nombreAutor) {
-		Vector<Autor> autores = new Vector<Autor>();
-		String sql = "select * from autor where nombre=" + nombreAutor;
-		autores = search(sql);
+		String sql = "select * from autor where nombre='" + nombreAutor + "'";
+		Vector<Autor> autores = search(sql);
 		return autores;
 	}
 
 	// UTILITIES
 	public static Vector<Autor> search(String sql) {
-		Vector<Autor> autores = new Vector<Autor>();
 		try {
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		autores = resultSetToVector();
+		Vector<Autor> autores = resultSetToVector();
 		return autores;
 	}
 

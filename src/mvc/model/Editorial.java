@@ -12,9 +12,9 @@ public class Editorial {
 	private String nombreEditorial;
 
 	public Editorial() {
-		
+
 	}
-	
+
 	public Editorial(String nombreEditorial) {
 		this.nombreEditorial = nombreEditorial;
 	}
@@ -84,46 +84,42 @@ public class Editorial {
 	// READ
 	// read all rows
 	public static Vector<Editorial> list() {
-		Vector<Editorial> editoriales = new Vector<Editorial>();
 		String sql = "select * from editorial";
-		editoriales = search(sql);
+		Vector<Editorial> editoriales = search(sql);
 		return editoriales;
 	}
 
 	// search by id
 	public static Vector<Editorial> searchById(int codigoEditorial) {
-		Vector<Editorial> editoriales = new Vector<Editorial>();
 		String sql = "select * from editorial where cod_editorial=" + codigoEditorial;
-		editoriales = search(sql);
+		Vector<Editorial> editoriales = search(sql);
 		return editoriales;
 	}
 
 	// search by name
 	public static Vector<Editorial> searchByName(String nombreEditorial) {
-		Vector<Editorial> editoriales = new Vector<Editorial>();
-		String sql = "select * from editorial where nombre=" + nombreEditorial;
-		editoriales = search(sql);
+		String sql = "select * from editorial where nombre='" + nombreEditorial + "'";
+		Vector<Editorial> editoriales = search(sql);
 		return editoriales;
 	}
 
 	// UTILITIES
-	public static Vector<Editorial> search(String sql){
-		Vector<Editorial> editoriales = new Vector<Editorial>();
+	public static Vector<Editorial> search(String sql) {
 		try {
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		editoriales = resultSetToVector();
+		Vector<Editorial> editoriales = resultSetToVector();
 		return editoriales;
 	}
-	
+
 	public static Vector<Editorial> resultSetToVector() {
 		Vector<Editorial> editoriales = new Vector<Editorial>();
 		Editorial editorial;
-		
+
 		try {
-			while(resultado.next()) {
+			while (resultado.next()) {
 				int codigoEditorial = resultado.getInt(1);
 				String nombreEditorial = resultado.getString(2);
 				editorial = new Editorial(nombreEditorial);
