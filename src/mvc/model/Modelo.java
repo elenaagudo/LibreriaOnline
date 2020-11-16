@@ -14,11 +14,11 @@ public class Modelo {
 	private Autor autor;
 	private Editorial editorial;
 	private Categoria categoria;
-	//private Libro libro;
+	private Libro libro;
 	private Vector<Autor> autores;
 	private Vector<Editorial> editoriales;
 	private Vector<Categoria> categorias;
-	//private Vector<Libro> libros;
+	private Vector<Libro> libros;
 	private String feedback;
 
 	
@@ -27,11 +27,13 @@ public class Modelo {
 		try {
 			conexion = ServicioBBDD.getService().getConnection();
 			sentencia = conexion.createStatement();
+			resultado = null;
 			Autor.setConnection(sentencia, resultado);
 			Categoria.setConnection(sentencia, resultado);
 			Editorial.setConnection(sentencia, resultado);
+			Libro.setConnection(sentencia, resultado);
 		} catch (SQLException e) {
-			System.out.println("MODELO: Error al crear la sentencia");
+			System.out.println("MODELO: Error al crear recursos de BBDD");
 			e.printStackTrace();
 		}
 	}
@@ -149,6 +151,37 @@ public class Modelo {
 	public Vector<Categoria> listCategories(){
 		categorias = Categoria.list();
 		return categorias;
+	}
+	
+	/*
+	 * LIBROS
+	 * 
+	 * */
+	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria, int codigoEditorial) {
+		libro = new Libro(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
+		feedback = libro.insert();
+		return feedback;
+	}
+	
+	public String updateBook() {
+		
+		return feedback;
+	}
+	
+	public String deleteBook(int isbn) {
+		try {
+			libros = Libro.searchById(isbn);
+			libro = libros.get(0);
+			feedback = libro.delete();
+		}catch(ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe una libro con ese isbn\n";
+		}
+		return feedback;
+	}
+	
+	public Vector<Libro> listBooks(){
+		libros = Libro.list();
+		return libros;
 	}
 	
 }

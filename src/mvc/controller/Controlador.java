@@ -5,6 +5,7 @@ import java.util.Vector;
 import mvc.model.Autor;
 import mvc.model.Categoria;
 import mvc.model.Editorial;
+import mvc.model.Libro;
 import mvc.model.Modelo;
 
 public class Controlador {
@@ -12,7 +13,8 @@ public class Controlador {
 	private Vector<Autor> autores;
 	private Vector<Editorial> editoriales;
 	private Vector<Categoria> categorias;
-	//private Vector<Libro> libros;
+	private Vector<Libro> libros;
+	// private Vector<Libro> libros;
 	private String feedback;
 
 	public Controlador(Modelo modelo) {
@@ -86,14 +88,40 @@ public class Controlador {
 		feedback = modelo.updateCategory(codigoCategoria, nombreCategoria);
 		return feedback;
 	}
-	
+
 	public String deleteCategory(int codigoCategoria) {
 		feedback = modelo.deleteCategory(codigoCategoria);
 		return feedback;
 	}
-	
-	public Vector<Categoria> listCategories(){
+
+	public Vector<Categoria> listCategories() {
 		categorias = modelo.listCategories();
 		return categorias;
 	}
+
+	/*
+	 * LIBROS
+	 * 
+	 */
+	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria,
+			int codigoEditorial) {
+		feedback = modelo.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
+		return feedback;
+	}
+
+	public String updateBook() {
+
+		return feedback;
+	}
+
+	public String deleteBook(int isbn) {
+		feedback = modelo.deleteBook(isbn);
+		return feedback;
+	}
+
+	public Vector<Libro> listBooks() {
+		libros = modelo.listBooks();
+		return libros;
+	}
+
 }

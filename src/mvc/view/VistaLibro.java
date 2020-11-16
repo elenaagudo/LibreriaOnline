@@ -1,21 +1,30 @@
 package mvc.view;
 
-import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Vector;
 
 import mvc.controller.Controlador;
+import mvc.model.Categoria;
+import mvc.model.Editorial;
+import mvc.model.Libro;
 
 public class VistaLibro {
 
 	private Controlador controlador;
+	VistaCategoria vistaCategoria;
+	VistaEditorial vistaEditorial;
 	private Scanner sc;
 	private int opcion;
 
 	private String feedback;
 
-	public VistaLibro(Controlador controlador) {
+	// añadir menu principal para volver atras, vistaCategoria y vistaEditorial para
+	// pedirle la lista
+	public VistaLibro(Controlador controlador, VistaCategoria vistaCategoria, VistaEditorial vistaEditorial) {
 		this.controlador = controlador;
+		this.vistaCategoria = vistaCategoria;
+		this.vistaEditorial = vistaEditorial;
 	}
 
 	public void init() {
@@ -36,7 +45,7 @@ public class VistaLibro {
 				delete();
 				break;
 			case 0:
-				
+
 				break;
 			default:
 				System.out.println("\nLa opcion tecleada no es correcta.");
@@ -71,7 +80,33 @@ public class VistaLibro {
 	}
 
 	public void insert() {
-		System.out.println("Insertar: EN CONSTRUCCIÓN");
+		System.out.println("ISBN");
+		int isbn = sc.nextInt();
+
+		System.out.println("Titulo");
+		sc.nextLine();
+		String titulo = sc.nextLine();
+
+		System.out.println("Precio");
+		double precio = sc.nextDouble();
+
+		System.out.println("Stock");
+		int stock = sc.nextInt();
+
+		// listar categoria
+		vistaCategoria = new VistaCategoria(controlador);
+		vistaCategoria.list();
+		System.out.println("Codigo Categoria");
+		int codigoCategoria = sc.nextInt();
+
+		// listar editorial
+		vistaEditorial = new VistaEditorial(controlador);
+		vistaEditorial.list();
+		System.out.println("Codigo Editorial");
+		int codigoEditorial = sc.nextInt();
+
+		feedback = controlador.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
+		System.out.println(feedback);
 	}
 
 	public void update() {
@@ -79,11 +114,34 @@ public class VistaLibro {
 	}
 
 	public void list() {
-		System.out.println("Listar: EN CONSTRUCCIÓN");
+		Vector<Libro> libros = controlador.listBooks();
+		System.out.println("\n***** LISTADO DE LIBROS *****");
+		System.out.println("ISBN\tTITULO\t\tPRECIO\tSTOCK\tCATEGORIA\tEDITORIAL");
+		for (Libro libro : libros) {
+			Vector<Categoria> categoria = Categoria.searchById(libro.getCodigoCategoria());
+			Vector<Editorial> editorial = Editorial.searchById(libro.getCodigoEditorial());
+			System.out.println(libro.getIsbn() + "\t" + libro.getTitulo() + "\t" + libro.getPrecio() + "\t"
+					+ libro.getStock() + "\t" + categoria.get(0).getNombreCategoria() + "\t"
+					+ editorial.get(0).getNombreEditorial());
+		}
+		System.out.println("***** FIN LISTADO LIBROS *****\n");
 	}
 
 	public void delete() {
-		System.out.println("Borrar: EN CONSTRUCCIÓN");
+		list();
+		System.out.println("Introduce el ISBN del libro que quieres borrar");
+		System.out.println("0 - Salir");
+		int isbn = 0;
+		try {
+			isbn = sc.nextInt();
+			if (isbn != 0) {
+				feedback = controlador.deleteBook(isbn);
+				System.out.println(feedback);
+			}
+		} catch (InputMismatchException e) {
+			sc.nextLine();
+			System.out.println("No es una opcion valida\n");
+		}
 	}
-	
+
 }
