@@ -93,6 +93,7 @@ public class VistaAutor {
 			feedback = controlador.updateAuthor(codigoAutor, nombreAutor);
 			System.out.println(feedback);
 		} catch (InputMismatchException e) {
+			System.out.println("No es un codigo valido");
 		}
 	}
 

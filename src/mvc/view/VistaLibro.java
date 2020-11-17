@@ -36,7 +36,7 @@ public class VistaLibro {
 				insert();
 				break;
 			case 2:
-				update();
+				initUpdateBook();
 				break;
 			case 3:
 				list();
@@ -67,6 +67,55 @@ public class VistaLibro {
 		System.out.println("4 - Borrar");
 		System.out.println("0 - Menu principal");
 		// System.out.println("q - Salir");
+	}
+
+	public void initUpdateBook() {
+		getMenuUpdateBook();
+		getOption();
+		do {
+
+			switch (opcion) {
+			case 1:
+				updateIsbn();
+				break;
+			case 2:
+				updateTitle();
+				break;
+			case 3:
+				updatePrice();
+				break;
+			case 4:
+				updateStock();
+				break;
+			case 5:
+				updateCategory();
+				break;
+			case 6:
+				updateEditorial();
+				break;
+			case 0:
+				break;
+			default:
+				System.out.println("\nLa opcion tecleada no es correcta.");
+				break;
+			}
+			if (opcion != 0) {
+				getMenuUpdateBook();
+				getOption();
+			}
+		} while (opcion != 0);
+	}
+
+	public void getMenuUpdateBook() {
+		System.out.println("**** EDITAR LIBROS ****");
+		System.out.println("Elige una opcion: ");
+		System.out.println("1 - Editar ISBN");
+		System.out.println("2 - Editar titulo");
+		System.out.println("3 - Editar precio");
+		System.out.println("4 - Editar stock");
+		System.out.println("5 - Editar categoria");
+		System.out.println("6 - Editar editorial");
+		System.out.println("0 - Menu principal");
 	}
 
 	public void getOption() {
@@ -109,8 +158,82 @@ public class VistaLibro {
 		System.out.println(feedback);
 	}
 
-	public void update() {
-		System.out.println("Editar: EN CONSTRUCCIÓN");
+	public void updateIsbn() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el ISBN nuevo");
+			int isbnNuevo = sc.nextInt();
+			controlador.updateBookIsbn(isbn, isbnNuevo);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
+	}
+
+	public void updateTitle() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el titulo nuevo");
+			String titulo = sc.nextLine();
+			controlador.updateBookTitle(isbn, titulo);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
+	}
+
+	public void updatePrice() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el precio nuevo");
+			double precio = sc.nextDouble();
+			controlador.updateBookPrice(isbn, precio);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
+	}
+
+	public void updateStock() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el stock nuevo");
+			int stock = sc.nextInt();
+			controlador.updateBookPrice(isbn, stock);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
+	}
+
+	public void updateCategory() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el codigo de categoria nuevo");
+			int codigoCategoria = sc.nextInt();
+			controlador.updateBookPrice(isbn, codigoCategoria);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
+	}
+
+	public void updateEditorial() {
+		list();
+		try {
+			System.out.println("Introduce el ISBN del libro que quieres editar");
+			int isbn = sc.nextInt();
+			System.out.println("Introduce el codigo de editorial nuevo");
+			int codigoEditorial = sc.nextInt();
+			controlador.updateBookPrice(isbn, codigoEditorial);
+		} catch (InputMismatchException e) {
+			System.out.println("No es un ISBN valido");
+		}
 	}
 
 	public void list() {

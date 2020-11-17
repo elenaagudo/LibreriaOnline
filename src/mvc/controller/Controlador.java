@@ -109,8 +109,39 @@ public class Controlador {
 		return feedback;
 	}
 
-	public String updateBook() {
+	// UPDATE isbn
+	public String updateBookIsbn(int isbn, int isbnNuevo) {
+		feedback = modelo.updateBookIsbn(isbn, isbnNuevo);
+		return feedback;
+	}
 
+	// UPDATE title
+	public String updateBookTitle(int isbn, String titulo) {
+		feedback = modelo.updateBookTitle(isbn, titulo);
+		return feedback;
+	}
+
+	// UPDATE price
+	public String updateBookPrice(int isbn, double precio) {
+		feedback = modelo.updateBookPrice(isbn, precio);
+		return feedback;
+	}
+
+	// UPDATE stock
+	public String updateBookStock(int isbn, int stock) {
+		feedback = modelo.updateBookStock(isbn, stock);
+		return feedback;
+	}
+
+	// UPDATE category
+	public String updateBookCategory(int isbn, int codigoCategoria) {
+		feedback = modelo.updateBookCategory(isbn, codigoCategoria);
+		return feedback;
+	}
+
+	// UPDATE editorial
+	public String updateBookEditorial(int isbn, int codigoEditorial) {
+		feedback = modelo.updateBookEditorial(isbn, codigoEditorial);
 		return feedback;
 	}
 

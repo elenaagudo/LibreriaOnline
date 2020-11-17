@@ -21,8 +21,7 @@ public class Modelo {
 	private Vector<Libro> libros;
 	private String feedback;
 
-	
-	//recibira el servicio, para pasarselo a getService()
+	// recibira el servicio, para pasarselo a getService()
 	public Modelo() {
 		try {
 			conexion = ServicioBBDD.getService().getConnection();
@@ -50,17 +49,17 @@ public class Modelo {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * AUTORES
 	 * 
-	 * */
+	 */
 	public String insertAuthor(String nombreAutor) {
 		autor = new Autor(nombreAutor);
 		feedback = autor.insert();
 		return feedback;
 	}
-	
+
 	public String updateAuthor(int codigoAutor, String nombreAutor) {
 		autores = Autor.searchById(codigoAutor);
 		autor = autores.get(0);
@@ -68,33 +67,33 @@ public class Modelo {
 		feedback = autor.update();
 		return feedback;
 	}
-	
+
 	public String deleteAuthor(int codigoAutor) {
 		try {
 			autores = Autor.searchById(codigoAutor);
 			autor = autores.get(0);
 			feedback = autor.delete();
-		}catch(ArrayIndexOutOfBoundsException e) {
+		} catch (ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe un autor con ese codigo\n";
 		}
 		return feedback;
 	}
-	
+
 	public Vector<Autor> listAuthors() {
 		autores = Autor.list();
 		return autores;
 	}
-	
+
 	/*
 	 * EDITORIALES
 	 * 
-	 * */
+	 */
 	public String insertEditorial(String nombreEditorial) {
 		editorial = new Editorial(nombreEditorial);
 		feedback = editorial.insert();
 		return feedback;
 	}
-	
+
 	public String updateEditorial(int codigoEditorial, String nombreEditorial) {
 		editoriales = Editorial.searchById(codigoEditorial);
 		editorial = editoriales.get(0);
@@ -102,33 +101,33 @@ public class Modelo {
 		feedback = editorial.update();
 		return feedback;
 	}
-	
+
 	public String deleteEditorial(int codigoEditorial) {
 		try {
 			editoriales = Editorial.searchById(codigoEditorial);
 			editorial = editoriales.get(0);
 			feedback = editorial.delete();
-		}catch(ArrayIndexOutOfBoundsException e) {
+		} catch (ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe un autor con ese codigo\n";
 		}
 		return feedback;
 	}
-	
-	public Vector<Editorial> listEditorials(){
+
+	public Vector<Editorial> listEditorials() {
 		editoriales = Editorial.list();
 		return editoriales;
 	}
-	
+
 	/*
 	 * CATEGORIAS
 	 * 
-	 * */
+	 */
 	public String insertCategory(String nombreCategoria) {
 		categoria = new Categoria(nombreCategoria);
 		feedback = categoria.insert();
 		return feedback;
 	}
-	
+
 	public String updateCategory(int codigoCategoria, String nombreCategoria) {
 		categorias = Categoria.searchById(codigoCategoria);
 		categoria = categorias.get(0);
@@ -136,52 +135,155 @@ public class Modelo {
 		feedback = categoria.update();
 		return feedback;
 	}
-	
+
 	public String deleteCategory(int codigoCategoria) {
 		try {
 			categorias = Categoria.searchById(codigoCategoria);
 			categoria = categorias.get(0);
 			feedback = categoria.delete();
-		}catch(ArrayIndexOutOfBoundsException e) {
+		} catch (ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe una categoria con ese codigo\n";
 		}
 		return feedback;
 	}
-	
-	public Vector<Categoria> listCategories(){
+
+	public Vector<Categoria> listCategories() {
 		categorias = Categoria.list();
 		return categorias;
 	}
-	
+
 	/*
 	 * LIBROS
 	 * 
-	 * */
-	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria, int codigoEditorial) {
+	 */
+	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria,
+			int codigoEditorial) {
 		libro = new Libro(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
 		feedback = libro.insert();
 		return feedback;
 	}
-	
-	public String updateBook() {
-		
+
+	// UPDATE isbn
+	public String updateBookIsbn(int isbn, int isbnNuevo) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.updateIsbn(isbnNuevo);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
 		return feedback;
 	}
-	
+
+	// UPDATE title
+	public String updateBookTitle(int isbn, String titulo) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.setTitulo(titulo);
+			feedback = libro.updateTitle();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
+		return feedback;
+	}
+
+	// UPDATE price
+	public String updateBookPrice(int isbn, double precio) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.setPrecio(precio);
+			feedback = libro.updatePrice();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
+		return feedback;
+	}
+
+	// UPDATE stock
+	public String updateBookStock(int isbn, int stock) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.setStock(stock);
+			feedback = libro.updateStock();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
+		return feedback;
+	}
+
+	// UPDATE category
+	public String updateBookCategory(int isbn, int codigoCategoria) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.setCodigoCategoria(codigoCategoria);
+			feedback = libro.updateCategory();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
+		return feedback;
+	}
+
+	// UPDATE editorial
+	public String updateBookEditorial(int isbn, int codigoEditorial) {
+		try {
+			libros = Libro.searchByIsbn(isbn);
+			libro = libros.get(0);
+			libro.setCodigoEditorial(codigoEditorial);
+			feedback = libro.updateEditorial();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un libro con ese isbn\n";
+		}
+		return feedback;
+	}
+
 	public String deleteBook(int isbn) {
 		try {
-			libros = Libro.searchById(isbn);
+			libros = Libro.searchByIsbn(isbn);
 			libro = libros.get(0);
 			feedback = libro.delete();
-		}catch(ArrayIndexOutOfBoundsException e) {
+		} catch (ArrayIndexOutOfBoundsException e) {
 			feedback = "No existe una libro con ese isbn\n";
 		}
 		return feedback;
 	}
-	
-	public Vector<Libro> listBooks(){
+
+	public Vector<Libro> listBooks() {
 		libros = Libro.list();
 		return libros;
 	}
-	
+
+	public Vector<Libro> searchBookByIsbn(int isbn) {
+		libros = Libro.searchByIsbn(isbn);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByTitle(String titulo) {
+		libros = Libro.searchByTitle(titulo);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByPrice(double precio) {
+		libros = Libro.searchByPrice(precio);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByStock(int stock) {
+		libros = Libro.searchByStock(stock);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByCategory(int codigoCategoria) {
+		libros = Libro.searchByCategory(codigoCategoria);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByEditorial(int codigoEditorial) {
+		libros = Libro.searchByEditorial(codigoEditorial);
+		return libros;
+	}
+
 }
