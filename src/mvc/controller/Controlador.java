@@ -50,6 +50,11 @@ public class Controlador {
 		autores = modelo.listAuthors();
 		return autores;
 	}
+	
+	public Vector<Autor> searchAuthorById(int codigoAutor){
+		autores = modelo.searchAuthorById(codigoAutor);
+		return autores;
+	}
 
 	/*
 	 * EDITORIALES
@@ -72,6 +77,11 @@ public class Controlador {
 
 	public Vector<Editorial> listEditorials() {
 		editoriales = modelo.listEditorials();
+		return editoriales;
+	}
+	
+	public Vector<Editorial> searchEditorialById(int codigoEditorial){
+		editoriales = modelo.searchEditorialById(codigoEditorial);
 		return editoriales;
 	}
 
@@ -98,6 +108,11 @@ public class Controlador {
 		categorias = modelo.listCategories();
 		return categorias;
 	}
+	
+	public Vector<Categoria> searchCategoryById(int codigoCategoria){
+		categorias = modelo.searchCategoryById(codigoCategoria);
+		return categorias;
+	}
 
 	/*
 	 * LIBROS
@@ -106,6 +121,11 @@ public class Controlador {
 	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria,
 			int codigoEditorial) {
 		feedback = modelo.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
+		return feedback;
+	}
+	
+	public String insertBookAuthor(Vector<Integer> codigosAutores, int isbn) {
+		feedback = modelo.insertBookAuthor(codigosAutores, isbn);
 		return feedback;
 	}
 
@@ -152,6 +172,36 @@ public class Controlador {
 
 	public Vector<Libro> listBooks() {
 		libros = modelo.listBooks();
+		return libros;
+	}
+	
+	public Vector<Libro> searchBookByIsbn(int isbn) {
+		libros = modelo.searchBookByIsbn(isbn);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByTitle(String titulo) {
+		libros = modelo.searchBookByTitle(titulo);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByPrice(double precio) {
+		libros = modelo.searchBookByPrice(precio);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByStock(int stock) {
+		libros = modelo.searchBookByStock(stock);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByCategory(int codigoCategoria) {
+		libros = modelo.searchBookByCategory(codigoCategoria);
+		return libros;
+	}
+
+	public Vector<Libro> searchBookByEditorial(int codigoEditorial) {
+		libros = modelo.searchBookByEditorial(codigoEditorial);
 		return libros;
 	}
 

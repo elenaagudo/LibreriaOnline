@@ -38,7 +38,7 @@ public class MenuPrincipal {
 				vistaEditorial.init();
 				break;
 			case 4:
-				vistaLibro = new VistaLibro(controlador, vistaCategoria, vistaEditorial);
+				vistaLibro = new VistaLibro(controlador, vistaCategoria, vistaEditorial, vistaAutor);
 				vistaLibro.init();
 				break;
 			case 0:

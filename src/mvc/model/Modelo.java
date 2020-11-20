@@ -61,10 +61,14 @@ public class Modelo {
 	}
 
 	public String updateAuthor(int codigoAutor, String nombreAutor) {
-		autores = Autor.searchById(codigoAutor);
-		autor = autores.get(0);
-		autor.setNombreAutor(nombreAutor);
-		feedback = autor.update();
+		try {
+			autores = Autor.searchById(codigoAutor);
+			autor = autores.get(0);
+			autor.setNombreAutor(nombreAutor);
+			feedback = autor.update();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe un autor con ese codigo\n";
+		}
 		return feedback;
 	}
 
@@ -83,6 +87,11 @@ public class Modelo {
 		autores = Autor.list();
 		return autores;
 	}
+	
+	public Vector<Autor> searchAuthorById(int codigoAutor){
+		autores = Autor.searchById(codigoAutor);
+		return autores;
+	}
 
 	/*
 	 * EDITORIALES
@@ -95,10 +104,14 @@ public class Modelo {
 	}
 
 	public String updateEditorial(int codigoEditorial, String nombreEditorial) {
-		editoriales = Editorial.searchById(codigoEditorial);
-		editorial = editoriales.get(0);
-		editorial.setNombreEditorial(nombreEditorial);
-		feedback = editorial.update();
+		try {
+			editoriales = Editorial.searchById(codigoEditorial);
+			editorial = editoriales.get(0);
+			editorial.setNombreEditorial(nombreEditorial);
+			feedback = editorial.update();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe una editorial con ese codigo\n";
+		}
 		return feedback;
 	}
 
@@ -108,13 +121,18 @@ public class Modelo {
 			editorial = editoriales.get(0);
 			feedback = editorial.delete();
 		} catch (ArrayIndexOutOfBoundsException e) {
-			feedback = "No existe un autor con ese codigo\n";
+			feedback = "No existe una editorial con ese codigo\n";
 		}
 		return feedback;
 	}
 
 	public Vector<Editorial> listEditorials() {
 		editoriales = Editorial.list();
+		return editoriales;
+	}
+
+	public Vector<Editorial> searchEditorialById(int codigoEditorial) {
+		editoriales = Editorial.searchById(codigoEditorial);
 		return editoriales;
 	}
 
@@ -129,10 +147,14 @@ public class Modelo {
 	}
 
 	public String updateCategory(int codigoCategoria, String nombreCategoria) {
-		categorias = Categoria.searchById(codigoCategoria);
-		categoria = categorias.get(0);
-		categoria.setNombreCategoria(nombreCategoria);
-		feedback = categoria.update();
+		try {
+			categorias = Categoria.searchById(codigoCategoria);
+			categoria = categorias.get(0);
+			categoria.setNombreCategoria(nombreCategoria);
+			feedback = categoria.update();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			feedback = "No existe una categoria con ese codigo\n";
+		}
 		return feedback;
 	}
 
@@ -152,6 +174,11 @@ public class Modelo {
 		return categorias;
 	}
 
+	public Vector<Categoria> searchCategoryById(int codigoCategoria) {
+		categorias = Categoria.searchById(codigoCategoria);
+		return categorias;
+	}
+
 	/*
 	 * LIBROS
 	 * 
@@ -162,16 +189,19 @@ public class Modelo {
 		feedback = libro.insert();
 		return feedback;
 	}
+	
+	public String insertBookAuthor(Vector<Integer> codigosAutores, int isbn) {
+		feedback = Libro.insertAuthors(codigosAutores, isbn);
+		return feedback;
+	}
 
 	// UPDATE isbn
 	public String updateBookIsbn(int isbn, int isbnNuevo) {
-		try {
-			libros = Libro.searchByIsbn(isbn);
-			libro = libros.get(0);
-			libro.updateIsbn(isbnNuevo);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			feedback = "No existe un libro con ese isbn\n";
-		}
+
+		libros = Libro.searchByIsbn(isbn);
+		libro = libros.get(0);
+		feedback = libro.updateIsbn(isbnNuevo);
+
 		return feedback;
 	}
 

@@ -86,31 +86,28 @@ public class Libro {
 
 	// INSERT
 	public String insert() {
-		String feedback = "";
-		Vector<Libro> libros = Libro.searchByIsbn(isbn);
-		Vector<Categoria> categoria = Categoria.searchById(codigoCategoria);
-		Vector<Editorial> editorial = Editorial.searchById(codigoEditorial);
-
-		if (libros.size() > 0) {
-			// no se puede insertar porque ya existe
-			feedback = "El ISBN introducido ya existe";
-		} else if (categoria.size() > 0 && editorial.size() > 0) {
-			try {
-				// se inserta porque esos codigo de editorial y categoria existen
-				String sql = "insert into libro (isbn, titulo, precio, stock, cod_categoria, cod_editorial) values ("
-						+ getIsbn() + ",'" + getTitulo() + "'," + getPrecio() + ", " + getStock() + ", "
-						+ getCodigoCategoria() + "," + getCodigoEditorial() + ")";
-				retorno = sentencia.executeUpdate(sql);
-				feedback = (retorno > 0) ? "Registro de libro correcto." : "No ha sido posible registrar el libro.";
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// no existe el codigo de categoria o el codigo de editorial
-			feedback = "No existe el codigo de categoria o codigo de editorial introducido";
+		try {
+			String sql = "insert into libro (isbn, titulo, precio, stock, cod_categoria, cod_editorial) values ("
+					+ getIsbn() + ",'" + getTitulo() + "'," + getPrecio() + ", " + getStock() + ", "
+					+ getCodigoCategoria() + "," + getCodigoEditorial() + ")";
+			retorno = sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return (retorno > 0) ? "Registro de libro correcto." : "No ha sido posible registrar el libro.";
+	}
 
-		return feedback;
+	public static String insertAuthors(Vector<Integer> codigosAutores, int isbn) {
+		int retorno = 0;
+		try {
+			for (Integer codigoAutor : codigosAutores) {
+				String sql = "insert into autor_libro (cod_autor, isbn) values (" + codigoAutor + "," + isbn + ")";
+				retorno = sentencia.executeUpdate(sql);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return (retorno > 0) ? "Registro de autor_libro correcto." : "No ha sido posible registrar el autor_libro.";
 	}
 
 	// UPDATE isbn
