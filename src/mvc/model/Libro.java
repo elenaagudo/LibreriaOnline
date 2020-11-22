@@ -97,19 +97,6 @@ public class Libro {
 		return (retorno > 0) ? "Registro de libro correcto." : "No ha sido posible registrar el libro.";
 	}
 
-	public static String insertAuthors(Vector<Integer> codigosAutores, int isbn) {
-		int retorno = 0;
-		try {
-			for (Integer codigoAutor : codigosAutores) {
-				String sql = "insert into autor_libro (cod_autor, isbn) values (" + codigoAutor + "," + isbn + ")";
-				retorno = sentencia.executeUpdate(sql);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return (retorno > 0) ? "Registro de autor_libro correcto." : "No ha sido posible registrar el autor_libro.";
-	}
-
 	// UPDATE isbn
 	public String updateIsbn(int isbnNuevo) {
 		try {

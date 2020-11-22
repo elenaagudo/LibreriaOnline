@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import mvc.controller.Controlador;
 import mvc.model.Autor;
+import mvc.model.AutorLibro;
 import mvc.model.Categoria;
 import mvc.model.Editorial;
 import mvc.model.Libro;
@@ -97,7 +98,10 @@ public class VistaLibro {
 				updateEditorial();
 				break;
 			case 7:
-				//updateAuthors();
+				deleteAuthor();
+				break;
+			case 8:
+				insertAuthor();
 				break;
 			case 0:
 				break;
@@ -121,7 +125,8 @@ public class VistaLibro {
 		System.out.println("4 - Editar stock");
 		System.out.println("5 - Editar categoria");
 		System.out.println("6 - Editar editorial");
-		System.out.println("7 - Editar autores");
+		System.out.println("7 - Borrar autor");
+		System.out.println("8 - Añadir autor");
 		System.out.println("0 - Menu principal");
 	}
 
@@ -134,7 +139,7 @@ public class VistaLibro {
 			opcion = -1;
 		}
 	}
-	
+
 	public void getOptionEditar() {
 		sc = new Scanner(System.in);
 		System.out.println("Introduzca una opcion: ");
@@ -153,7 +158,6 @@ public class VistaLibro {
 		int codigoCategoria = 0;
 		int codigoEditorial = 0;
 		int codigoAutor = 0;
-		Vector<Integer> codigosAutores = new Vector<Integer>();
 
 		// se pide el ISBN
 		do {
@@ -254,7 +258,12 @@ public class VistaLibro {
 							existeEditorial = false;
 						} else {
 							existeEditorial = true;
-							
+
+							// inserta el libro
+							feedback = controlador.insertBook(isbn, titulo, precio, stock, codigoCategoria,
+									codigoEditorial);
+							System.out.println(feedback);
+
 							boolean existeAutor = true;
 							boolean introducirMas = true;
 							do {
@@ -283,10 +292,14 @@ public class VistaLibro {
 									if (autor.size() > 0) {
 										existeAutor = true;
 										// preguntar si se ha repetido el autor
-										if (!codigosAutores.contains(codigoAutor)) {
-											codigosAutores.addElement(codigoAutor);
+										Vector<AutorLibro> autorLibro = controlador.searchBookByAuthorIsbn(codigoAutor,
+												isbn);
+										if (autorLibro.size() > 0) {
+											System.out.println("Ya has introducido ese ID de autor para ese ISBN");
 										} else {
-											System.out.println("Ya has introducido ese ID de autor");
+											// inserta los codigos de autor con el isbn
+											feedback = controlador.insertBookAuthor(codigoAutor, isbn);
+											System.out.println(feedback);
 										}
 									} else {
 										System.out.println("No existe un autor con ese ID\n");
@@ -294,14 +307,6 @@ public class VistaLibro {
 									}
 								} else {
 									introducirMas = false;
-									// inserta el libro
-									feedback = controlador.insertBook(isbn, titulo, precio, stock, codigoCategoria,
-											codigoEditorial);
-									System.out.println(feedback);
-									// inserta los codigos de autor con el isbn
-									feedback = controlador.insertBookAuthor(codigosAutores, isbn);
-									System.out.println(feedback);
-
 								}
 							} while (!existeAutor || introducirMas);
 						}
@@ -466,14 +471,30 @@ public class VistaLibro {
 	public void list() {
 		Vector<Libro> libros = controlador.listBooks();
 		System.out.println("\n***** LISTADO DE LIBROS *****");
-		System.out.println("ISBN\tTITULO\t\tPRECIO\tSTOCK\tCATEGORIA\tEDITORIAL");
+		System.out.println(
+				"===========================================================================================================");
+		System.out.println(
+				"ISBN        Título                                        Precio   Stock    Categoría           Editorial");
+		System.out.println(
+				"----------- --------------------------------------------- -------- -------- ------------------- -------------------");
 		for (Libro libro : libros) {
-			Vector<Categoria> categoria = Categoria.searchById(libro.getCodigoCategoria());
-			Vector<Editorial> editorial = Editorial.searchById(libro.getCodigoEditorial());
+			Vector<Categoria> categoria = controlador.searchCategoryById(libro.getCodigoCategoria());
+			Vector<Editorial> editorial = controlador.searchEditorialById(libro.getCodigoEditorial());
+			Vector<AutorLibro> autorLibro = controlador.searchBookAuthorByIsbn(libro.getIsbn());
 			// quitar ln al syso, para poner los autores en la misma linea
-			System.out.println(libro.getIsbn() + "\t" + libro.getTitulo() + "\t" + libro.getPrecio() + "\t"
-					+ libro.getStock() + "\t" + categoria.get(0).getNombreCategoria() + "\t"
-					+ editorial.get(0).getNombreEditorial());
+			System.out.println(libro.getIsbn() + " ".repeat(12 - String.valueOf(libro.getIsbn()).length())
+					+ libro.getTitulo() + " ".repeat(46 - libro.getTitulo().length()) + libro.getPrecio()
+					+ " ".repeat(9 - String.valueOf(libro.getPrecio()).length()) + libro.getStock()
+					+ " ".repeat(9 - String.valueOf(libro.getStock()).length()) + categoria.get(0).getNombreCategoria()
+					+ " ".repeat(20 - categoria.get(0).getNombreCategoria().length())
+					+ editorial.get(0).getNombreEditorial()
+					+ " ".repeat(20 - editorial.get(0).getNombreEditorial().length()));
+			// foreach para recorrer todos los autores del libro
+			for (AutorLibro autorL : autorLibro) {
+				Vector<Autor> autor = controlador.searchAuthorById(autorL.getCodigoAutor());
+				System.out.println(" ".repeat(12) + "-Autor: " + autor.get(0).getNombreAutor() + " ");
+			}
+			System.out.println();
 		}
 		System.out.println("***** FIN LISTADO LIBROS *****\n");
 	}
@@ -495,4 +516,79 @@ public class VistaLibro {
 		}
 	}
 
+	/*
+	 * AUTOR_LIBRO
+	 * 
+	 */
+	public void insertAuthor() {
+		list();
+		System.out.println("Introduce el ISBN del libro al que le quieres añadir un autor");
+		System.out.println("0 - Salir");
+
+		int isbn = 0;
+		try {
+			isbn = sc.nextInt();
+			if (isbn != 0) {
+				// listar todos los autores
+				vistaAutor = new VistaAutor(controlador);
+				vistaAutor.list();
+
+				System.out.println("Introduce el codigo del autor que quieres añadir al libro");
+				int codigoAutor = sc.nextInt();
+
+				// comprobar si existe ese autor
+				Vector<Autor> autor = controlador.searchAuthorById(codigoAutor);
+				if (autor.size() > 0) {
+					// comprobar que ese autor no este ya asignado al libro
+					Vector<AutorLibro> autorLibro = controlador.searchBookByAuthorIsbn(codigoAutor, isbn);
+					if (autorLibro.size() == 0) {
+						feedback = controlador.insertBookAuthor(codigoAutor, isbn);
+						System.out.println(feedback);
+					} else {
+						System.out.println("Ya has introducido ese ID de autor para ese ISBN");
+					}
+				} else {
+					System.out.println("No existe un autor con ese ID\n");
+				}
+
+			}
+		} catch (InputMismatchException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteAuthor() {
+		list();
+		System.out.println("Introduce el ISBN del libro del que quieres borrar el autor");
+		System.out.println("0 - Salir");
+		int isbn = 0;
+		try {
+			isbn = sc.nextInt();
+			if (isbn != 0) {
+				// listar los autores de ese libro
+				Vector<AutorLibro> autorLibro = controlador.searchBookAuthorByIsbn(isbn);
+				System.out.println("\n**** LISTADO DE AUTORES *****");
+				for (AutorLibro autorL : autorLibro) {
+					Vector<Autor> autor = controlador.searchAuthorById(autorL.getCodigoAutor());
+					System.out.println(autor.get(0).getCodigoAutor() + " - " + autor.get(0).getNombreAutor());
+				}
+				System.out.println("**** FIN LISTADO DE AUTORES *****\n");
+
+				System.out.println("Introduce el codigo del autor que quieres borrar del libro");
+				int codigoAutor = sc.nextInt();
+
+				// comprobar si existe ese autor con ese isbn
+				Vector<AutorLibro> comprobarAutor = controlador.searchBookByAuthorIsbn(codigoAutor, isbn);
+				if (comprobarAutor.size() > 0) {
+					feedback = controlador.deleteBookAuthor(codigoAutor, isbn);
+					System.out.println(feedback);
+				} else {
+					System.out.println("El libro no tiene el autor con ese codigo");
+				}
+			}
+		} catch (InputMismatchException e) {
+			sc.nextLine();
+			System.out.println("No es una opcion valida\n");
+		}
+	}
 }

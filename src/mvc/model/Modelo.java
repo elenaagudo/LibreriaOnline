@@ -31,6 +31,7 @@ public class Modelo {
 			Categoria.setConnection(sentencia, resultado);
 			Editorial.setConnection(sentencia, resultado);
 			Libro.setConnection(sentencia, resultado);
+			AutorLibro.setConnection(sentencia, resultado);
 		} catch (SQLException e) {
 			System.out.println("MODELO: Error al crear recursos de BBDD");
 			e.printStackTrace();
@@ -189,11 +190,6 @@ public class Modelo {
 		feedback = libro.insert();
 		return feedback;
 	}
-	
-	public String insertBookAuthor(Vector<Integer> codigosAutores, int isbn) {
-		feedback = Libro.insertAuthors(codigosAutores, isbn);
-		return feedback;
-	}
 
 	// UPDATE isbn
 	public String updateBookIsbn(int isbn, int isbnNuevo) {
@@ -314,6 +310,41 @@ public class Modelo {
 	public Vector<Libro> searchBookByEditorial(int codigoEditorial) {
 		libros = Libro.searchByEditorial(codigoEditorial);
 		return libros;
+	}
+	
+	/*
+	 * AUTOR_LIBRO
+	 * 
+	 * */
+	//INSERT
+	public String insertBookAuthor(int codigoAutor, int isbn) {
+		AutorLibro autorLibro = new AutorLibro(codigoAutor, isbn);
+		feedback = autorLibro.insert();
+		return feedback;
+	}
+	
+	//DELETE
+	public String deleteBookAuthor(int codigoAutor, int isbn) {
+		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthorIsbn(codigoAutor, isbn);
+		AutorLibro autorL = autorLibro.get(0);
+		feedback = autorL.deleteAuthor();
+		return feedback;
+	}
+	
+	//LIST
+	public Vector<AutorLibro> searchBookByAuthorIsbn(int codigoAutor, int isbn){
+		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthorIsbn(codigoAutor, isbn);
+		return autorLibro;
+	}
+	
+	public Vector<AutorLibro> searchBookIsbnByAuthor(int codigoAutor){
+		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthor(codigoAutor);
+		return autorLibro;
+	}
+	
+	public Vector<AutorLibro> searchBookAuthorByIsbn(int isbn){
+		Vector<AutorLibro> autorLibro = AutorLibro.searchByIsbn(isbn);
+		return autorLibro;
 	}
 
 }

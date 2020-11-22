@@ -3,6 +3,7 @@ package mvc.controller;
 import java.util.Vector;
 
 import mvc.model.Autor;
+import mvc.model.AutorLibro;
 import mvc.model.Categoria;
 import mvc.model.Editorial;
 import mvc.model.Libro;
@@ -50,8 +51,8 @@ public class Controlador {
 		autores = modelo.listAuthors();
 		return autores;
 	}
-	
-	public Vector<Autor> searchAuthorById(int codigoAutor){
+
+	public Vector<Autor> searchAuthorById(int codigoAutor) {
 		autores = modelo.searchAuthorById(codigoAutor);
 		return autores;
 	}
@@ -79,8 +80,8 @@ public class Controlador {
 		editoriales = modelo.listEditorials();
 		return editoriales;
 	}
-	
-	public Vector<Editorial> searchEditorialById(int codigoEditorial){
+
+	public Vector<Editorial> searchEditorialById(int codigoEditorial) {
 		editoriales = modelo.searchEditorialById(codigoEditorial);
 		return editoriales;
 	}
@@ -108,8 +109,8 @@ public class Controlador {
 		categorias = modelo.listCategories();
 		return categorias;
 	}
-	
-	public Vector<Categoria> searchCategoryById(int codigoCategoria){
+
+	public Vector<Categoria> searchCategoryById(int codigoCategoria) {
 		categorias = modelo.searchCategoryById(codigoCategoria);
 		return categorias;
 	}
@@ -121,11 +122,6 @@ public class Controlador {
 	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria,
 			int codigoEditorial) {
 		feedback = modelo.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
-		return feedback;
-	}
-	
-	public String insertBookAuthor(Vector<Integer> codigosAutores, int isbn) {
-		feedback = modelo.insertBookAuthor(codigosAutores, isbn);
 		return feedback;
 	}
 
@@ -174,7 +170,7 @@ public class Controlador {
 		libros = modelo.listBooks();
 		return libros;
 	}
-	
+
 	public Vector<Libro> searchBookByIsbn(int isbn) {
 		libros = modelo.searchBookByIsbn(isbn);
 		return libros;
@@ -203,6 +199,38 @@ public class Controlador {
 	public Vector<Libro> searchBookByEditorial(int codigoEditorial) {
 		libros = modelo.searchBookByEditorial(codigoEditorial);
 		return libros;
+	}
+
+	/*
+	 * AUTOR_LIBRO
+	 * 
+	 */
+	// INSERT
+	public String insertBookAuthor(int codigoAutor, int isbn) {
+		feedback = modelo.insertBookAuthor(codigoAutor, isbn);
+		return feedback;
+	}
+
+	// DELETE
+	public String deleteBookAuthor(int codigoAutor, int isbn) {
+		feedback = modelo.deleteBookAuthor(codigoAutor, isbn);
+		return feedback;
+	}
+
+	// LIST
+	public Vector<AutorLibro> searchBookByAuthorIsbn(int codigoAutor, int isbn) {
+		Vector<AutorLibro> autorLibro = modelo.searchBookByAuthorIsbn(codigoAutor, isbn);
+		return autorLibro;
+	}
+
+	public Vector<AutorLibro> searchBookIsbnByAuthor(int codigoAutor) {
+		Vector<AutorLibro> autorLibro = modelo.searchBookIsbnByAuthor(codigoAutor);
+		return autorLibro;
+	}
+
+	public Vector<AutorLibro> searchBookAuthorByIsbn(int isbn) {
+		Vector<AutorLibro> autorLibro = modelo.searchBookAuthorByIsbn(isbn);
+		return autorLibro;
 	}
 
 }
