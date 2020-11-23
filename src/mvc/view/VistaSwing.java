@@ -5,20 +5,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import mvc.controller.Controlador;
+import mvc.model.Autor;
 
 public class VistaSwing extends WindowAdapter implements ActionListener {
 
 	// textarea y botones
 	private Controlador controlador;
-	private ResultSet resultado;
 	private JTextArea txtArea;
 	private JButton listBtn;
 	private JButton resetBtn;
@@ -26,16 +27,20 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 
 	public VistaSwing(Controlador controlador) {
 		this.controlador = controlador;
-		
+
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.CENTER);
-		
+
 		JFrame frame = new JFrame("Listado autores");
 		frame.setLayout(flowLayout);
 		frame.setBounds(400, 200, 350, 300);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		txtArea = new JTextArea(10,30);
+		txtArea = new JTextArea(10, 30);
+		JScrollPane scroll = new JScrollPane(txtArea);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		txtArea.setEditable(false);
 		listBtn = new JButton("Listar");
 		resetBtn = new JButton("Limpiar");
 		exitBtn = new JButton("Salir");
@@ -44,7 +49,7 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 		resetBtn.addActionListener(this);
 		exitBtn.addActionListener(this);
 
-		frame.add(txtArea);
+		frame.add(scroll);
 		frame.add(listBtn);
 		frame.add(resetBtn);
 		frame.add(exitBtn);
@@ -61,7 +66,7 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// if(e.getActionCommand().equals("terminar"))
 		if (e.getSource() == listBtn) {
-			//listAuthors();
+			listAuthors();
 		} else if (e.getSource() == resetBtn) {
 			reset();
 		} else if (e.getSource() == exitBtn) {
@@ -71,19 +76,13 @@ public class VistaSwing extends WindowAdapter implements ActionListener {
 
 	}
 
-	/*public void listAuthors() {
-		resultado = controlador.getAuthors();
+	public void listAuthors() {
+		Vector<Autor> autores = controlador.listAuthors();
 		txtArea.setText("");
-		try {
-			while (resultado.next()) {
-				int cod_autor = resultado.getInt(1);
-				String nombre = resultado.getString(2);
-				txtArea.append(cod_autor + ": " + nombre+"\n");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		for (Autor autor : autores) {
+			txtArea.append(autor.getCodigoAutor() + " - " + autor.getNombreAutor()+"\n");
 		}
-	}*/
+	}
 
 	// reset
 	public void reset() {
