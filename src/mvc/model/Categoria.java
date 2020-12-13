@@ -67,7 +67,7 @@ public class Categoria {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Edición de categoria correcto." : "No ha sido posible editar la categoria.";
+		return (retorno > 0) ? "Edición de categoria correcta." : "No ha sido posible editar la categoria.";
 	}
 
 	// DELETE
@@ -131,6 +131,21 @@ public class Categoria {
 			e.printStackTrace();
 		}
 		return categorias;
+	}
+
+	/*
+	 * Ampliacion para Swing
+	 * 
+	 */
+	public static ResultSet obtenerDatosMasMetadatosCategoria() {
+		try {
+			String sql = "select cod_categoria as 'CODIGO', nombre as 'NOMBRE' from categoria";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("CATEGORIA: Fallo al obtener Datos mas Metadatos.");
+			e.printStackTrace();
+		}
+		return resultado;
 	}
 
 }

@@ -66,7 +66,7 @@ public class Autor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Edición de autor correcto." : "No ha sido posible editar el autor.";
+		return (retorno > 0) ? "Edición de autor correcta." : "No ha sido posible editar el autor.";
 	}
 
 	// DELETE
@@ -130,5 +130,20 @@ public class Autor {
 			e.printStackTrace();
 		}
 		return autores;
+	}
+
+	/*
+	 * Ampliacion para Swing
+	 * 
+	 */
+	public static ResultSet obtenerDatosMasMetadatosAutor() {
+		try {
+			String sql = "select cod_autor as 'CODIGO', nombre as 'NOMBRE' from autor";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("AUTOR: Fallo al obtener Datos mas Metadatos.");
+			e.printStackTrace();
+		}
+		return resultado;
 	}
 }

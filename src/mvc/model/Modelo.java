@@ -88,10 +88,16 @@ public class Modelo {
 		autores = Autor.list();
 		return autores;
 	}
-	
-	public Vector<Autor> searchAuthorById(int codigoAutor){
+
+	public Vector<Autor> searchAuthorById(int codigoAutor) {
 		autores = Autor.searchById(codigoAutor);
 		return autores;
+	}
+
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosAutor() {
+		resultado = Autor.obtenerDatosMasMetadatosAutor();
+		return resultado;
 	}
 
 	/*
@@ -137,6 +143,12 @@ public class Modelo {
 		return editoriales;
 	}
 
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosEditorial() {
+		resultado = Editorial.obtenerDatosMasMetadatosEditorial();
+		return resultado;
+	}
+
 	/*
 	 * CATEGORIAS
 	 * 
@@ -178,6 +190,12 @@ public class Modelo {
 	public Vector<Categoria> searchCategoryById(int codigoCategoria) {
 		categorias = Categoria.searchById(codigoCategoria);
 		return categorias;
+	}
+
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosCategoria() {
+		resultado = Categoria.obtenerDatosMasMetadatosCategoria();
+		return resultado;
 	}
 
 	/*
@@ -311,40 +329,45 @@ public class Modelo {
 		libros = Libro.searchByEditorial(codigoEditorial);
 		return libros;
 	}
-	
+
 	/*
 	 * AUTOR_LIBRO
 	 * 
-	 * */
-	//INSERT
+	 */
+	// INSERT
 	public String insertBookAuthor(int codigoAutor, int isbn) {
 		AutorLibro autorLibro = new AutorLibro(codigoAutor, isbn);
 		feedback = autorLibro.insert();
 		return feedback;
 	}
-	
-	//DELETE
+
+	// DELETE
 	public String deleteBookAuthor(int codigoAutor, int isbn) {
 		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthorIsbn(codigoAutor, isbn);
 		AutorLibro autorL = autorLibro.get(0);
 		feedback = autorL.deleteAuthor();
 		return feedback;
 	}
-	
-	//LIST
-	public Vector<AutorLibro> searchBookByAuthorIsbn(int codigoAutor, int isbn){
+
+	// LIST
+	public Vector<AutorLibro> searchBookByAuthorIsbn(int codigoAutor, int isbn) {
 		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthorIsbn(codigoAutor, isbn);
 		return autorLibro;
 	}
-	
-	public Vector<AutorLibro> searchBookIsbnByAuthor(int codigoAutor){
+
+	public Vector<AutorLibro> searchBookIsbnByAuthor(int codigoAutor) {
 		Vector<AutorLibro> autorLibro = AutorLibro.searchByAuthor(codigoAutor);
 		return autorLibro;
 	}
-	
-	public Vector<AutorLibro> searchBookAuthorByIsbn(int isbn){
+
+	public Vector<AutorLibro> searchBookAuthorByIsbn(int isbn) {
 		Vector<AutorLibro> autorLibro = AutorLibro.searchByIsbn(isbn);
 		return autorLibro;
 	}
 
+	//Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosLibro() {
+		resultado = Libro.obtenerDatosMasMetadatosLibro();
+		return resultado;
+	}
 }

@@ -1,5 +1,6 @@
 package mvc.controller;
 
+import java.sql.ResultSet;
 import java.util.Vector;
 
 import mvc.model.Autor;
@@ -57,6 +58,12 @@ public class Controlador {
 		return autores;
 	}
 
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosAutor() {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosAutor();
+		return resultado;
+	}
+
 	/*
 	 * EDITORIALES
 	 * 
@@ -86,6 +93,12 @@ public class Controlador {
 		return editoriales;
 	}
 
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosEditorial() {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosEditorial();
+		return resultado;
+	}
+
 	/*
 	 * CATEGORIAS
 	 * 
@@ -113,6 +126,12 @@ public class Controlador {
 	public Vector<Categoria> searchCategoryById(int codigoCategoria) {
 		categorias = modelo.searchCategoryById(codigoCategoria);
 		return categorias;
+	}
+
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosCategoria() {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosCategoria();
+		return resultado;
 	}
 
 	/*
@@ -231,6 +250,12 @@ public class Controlador {
 	public Vector<AutorLibro> searchBookAuthorByIsbn(int isbn) {
 		Vector<AutorLibro> autorLibro = modelo.searchBookAuthorByIsbn(isbn);
 		return autorLibro;
+	}
+
+	// Ampliacion para Swing
+	public ResultSet obtenerDatosMasMetadatosLibro() {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosLibro();
+		return resultado;
 	}
 
 }

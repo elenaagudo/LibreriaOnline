@@ -265,4 +265,18 @@ public class Libro {
 		return libros;
 	}
 
+	/*
+	 * Ampliacion para Swing
+	 * 
+	 */
+	public static ResultSet obtenerDatosMasMetadatosLibro() {
+		try {
+			String sql = "select isbn as 'ISBN', titulo as 'TITULO', precio as 'PRECIO', stock as 'STOCK', c.nombre as 'CATEGORIA', e.nombre as 'EDITORIAL' from libro l, editorial e, categoria c where l.cod_editorial=e.cod_editorial and l.cod_categoria=c.cod_categoria";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+
 }

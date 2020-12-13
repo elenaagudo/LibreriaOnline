@@ -67,7 +67,7 @@ public class Editorial {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Edicion de editorial correcto." : "No ha sido posible editar la editorial.";
+		return (retorno > 0) ? "Edición de editorial correcta." : "No ha sido posible editar la editorial.";
 	}
 
 	// DELETE
@@ -78,7 +78,7 @@ public class Editorial {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Edicion de editorial correcto." : "No ha sido posible editar la editorial.";
+		return (retorno > 0) ? "Borrado de editorial correcto." : "No ha sido posible borrar la editorial.";
 	}
 
 	// READ
@@ -130,6 +130,17 @@ public class Editorial {
 			e.printStackTrace();
 		}
 		return editoriales;
+	}
+	
+	public static ResultSet obtenerDatosMasMetadatosEditorial() {
+		try {
+			String sql = "select cod_editorial as 'CODIGO', nombre as 'NOMBRE' from editorial";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println("EDITORIAL: Fallo al obtener Datos mas Metadatos.");
+			e.printStackTrace();
+		}
+		return resultado;
 	}
 
 }
