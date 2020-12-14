@@ -15,10 +15,6 @@ public class SwingLauncher {
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
-				//new VistaAutorSwing(controlador);
-				//new VistaEditorialSwing(controlador);
-				//new VistaCategoriaSwing(controlador);
-				//new VistaLibroSwing(controlador);
 				new VistaMenuSwing(controlador);
 			}
 		});

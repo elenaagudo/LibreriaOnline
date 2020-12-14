@@ -1,58 +1,155 @@
 package mvc.swingview;
 
-import java.awt.BorderLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.Dimension;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import mvc.controller.Controlador;
 
-public class VistaLibroSwing implements WindowListener {
+public class VistaLibroSwing implements ListSelectionListener {
 
 	private Controlador controlador;
+	private JFrame ventana;
 
-	public VistaLibroSwing(Controlador controlador) {
+	private JPanel panelCentral;
+	private JPanel panelLibros;
+	private JPanel panelPestanas;
+	private JPanel panelBotonesCRUD;
+	private JPanel panelLibroAutor;
+	private JPanel panelAutores;
+
+	private JButton editar;
+	private JButton borrar;
+	private JButton nuevo;
+	private JButton quitarAutor;
+	private JButton anadirAutor;
+	private JButton recargarAutores;
+	/*
+	 * private JButton cancelar; private JButton aceptar; private JButton limpiar;
+	 * private JButton recargarListas;
+	 */
+
+	private DefaultTableModel modeloTablaLibros;
+	private DefaultTableModel modeloTablaLibroAutor;
+	private DefaultTableModel modeloTablaAutores;
+
+	private ListSelectionModel seleccionTablaLibros;
+	private ListSelectionModel seleccionTablaAutorLibro;
+	private ListSelectionModel seleccionTablaAutores;
+
+	private JTable tablaLibros;
+	private JTable tablaLibroAutor;
+	private JTable tablaAutores;
+
+	private JLabel tituloFuncion = new JLabel("MANTENIMIENTO LIBROS");
+
+	private Dimension tamanoMarcoRequerido;
+
+	public VistaLibroSwing(JFrame ventana, Controlador controlador) {
+		this.ventana = ventana;
 		this.controlador = controlador;
 
-		JFrame ventana = new JFrame("LIBROS");
-		ventana.setSize(650, 200);
-		ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		modeloTablaLibros = new DefaultTableModel() {
 
-		JLabel titulo = new JLabel("LISTADO DE LIBROS");
-		DefaultTableModel modeloTabla = new DefaultTableModel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return true;
+				return false;
+			}
+
+		};
+
+		modeloTablaLibroAutor = new DefaultTableModel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return false;
 			}
 		};
 
-		JTable tabla = new JTable(modeloTabla);
-		JScrollPane scroll = new JScrollPane(tabla);
-		JPanel panelIzquierda = new JPanel();
-		JPanel panelDerecha = new JPanel();
-		JPanel panelSur = new JPanel();
+		modeloTablaAutores = new DefaultTableModel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-		ventana.addWindowListener(this);
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return false;
+			}
+		};
 
-		ventana.add(titulo, BorderLayout.NORTH);
-		ventana.add(scroll, BorderLayout.CENTER);
-		ventana.add(panelIzquierda, BorderLayout.WEST);
-		ventana.add(panelDerecha, BorderLayout.EAST);
-		ventana.add(panelSur, BorderLayout.SOUTH);
+		tablaLibros = new JTable(modeloTablaLibros);
+		tablaLibroAutor = new JTable(modeloTablaLibroAutor);
+		tablaAutores = new JTable(modeloTablaAutores);
+
+		tablaLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tablaLibroAutor.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tablaAutores.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		seleccionTablaLibros = tablaLibros.getSelectionModel();
+		seleccionTablaLibros.addListSelectionListener(this);
+		JScrollPane scrollTablaLibros = new JScrollPane(tablaLibros);
+
+		seleccionTablaAutorLibro = tablaLibroAutor.getSelectionModel();
+		seleccionTablaAutorLibro.addListSelectionListener(this);
+		JScrollPane scrollTablaAutorLibro = new JScrollPane(tablaLibroAutor);
+
+		seleccionTablaAutores = tablaAutores.getSelectionModel();
+		seleccionTablaAutores.addListSelectionListener(this);
+		JScrollPane scrollTablaAutores = new JScrollPane(tablaAutores);
+
+		editar = new JButton("Editar");
+		borrar = new JButton("Borrar");
+		nuevo = new JButton("Nuevo");
+		panelBotonesCRUD = new JPanel();
+		panelBotonesCRUD.add(editar);
+		panelBotonesCRUD.add(borrar);
+		panelBotonesCRUD.add(nuevo);
+		
+
+		quitarAutor = new JButton("Quitar autor");
+
+		anadirAutor = new JButton("Añadir autor");
+		recargarAutores = new JButton("Recargar autores");
+
+		// paneles 5
+		// para los botones boxlayout
 
 		ventana.setVisible(true);
+		// obtenerDatosParaTabla(modeloTablaLibro,
+		// controlador.getClass().getMethod("obtenerDatosMasMetadatosLibro"), 0);
+		// en el catch: noSuchMethodException
 
-		cargarDatosEnTabla(modeloTabla);
+		// cargarDatosEnTabla(modeloTabla);
+
 	}
 
+	// obtenerDatosParaTabla(DefaultTableModel modeloTabla, Method metodo, int
+	// parametroMetodo)
+	// obtenerDatosParaLista(DefaultComboBoxModel<String> modeloLista, Method
+	// metodo)
+	// Vector<?> resultado = null;
+
+	// mousePressed()
+	// String componenteOrigen = getClass().getName()
 	public void cargarDatosEnTabla(DefaultTableModel modelo) {
 		try {
 			ResultSet datos = controlador.obtenerDatosMasMetadatosLibro();
@@ -76,34 +173,38 @@ public class VistaLibroSwing implements WindowListener {
 
 	}
 
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		controlador.close();
-		System.out.println("Adios!!");
+	// UTILITIES
+	// Restablece/habilita/deshabilita el panel CRUD
+	private void restablecerPanelCRUD() {
+		editar.setEnabled(false);
+		borrar.setEnabled(false);
+		nuevo.setEnabled(true);
+	}
+
+	private void habilitarPanelCRUD() {
+		editar.setEnabled(true);
+		borrar.setEnabled(true);
+		nuevo.setEnabled(true);
+	}
+
+	private void deshabilitarPanelCRUD() {
+		editar.setEnabled(false);
+		borrar.setEnabled(false);
+		nuevo.setEnabled(false);
+	}
+
+	public JPanel getPanelCentral() {
+		return panelCentral;
+	}
+
+	public Dimension getTamanoMarcoRequerido() {
+		return tamanoMarcoRequerido;
 	}
 
 	@Override
-	public void windowActivated(WindowEvent arg0) {
-	}
+	public void valueChanged(ListSelectionEvent arg0) {
+		// TODO Auto-generated method stub
 
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {
 	}
 
 }

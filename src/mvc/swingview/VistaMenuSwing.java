@@ -269,10 +269,10 @@ public class VistaMenuSwing implements WindowListener, ActionListener {
 			}
 
 			if (panelLibro == null) {
-				// panelLibro = new VistaLibroSwing(ventana, controlador);
+				panelLibro = new VistaLibroSwing(ventana, controlador);
 			} else {
-				// ventana.add(panelLibro.getPanelCentral(), BorderLayout.CENTER);
-				// ventana.setSize(panelLibro.getTamanoMarcoRequerido());
+				ventana.add(panelLibro.getPanelCentral(), BorderLayout.CENTER);
+				ventana.setSize(panelLibro.getTamanoMarcoRequerido());
 				ventana.validate();
 				ventana.repaint();
 			}
