@@ -370,4 +370,9 @@ public class Modelo {
 		resultado = Libro.obtenerDatosMasMetadatosLibro();
 		return resultado;
 	}
+	
+	public ResultSet obtenerDatosMasMetadatosAutorLibro(int isbn) {
+		resultado = AutorLibro.obtenerDatosMasMetadatosAutorLibro(isbn);
+		return resultado;
+	}
 }

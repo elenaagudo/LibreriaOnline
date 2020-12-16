@@ -5,16 +5,17 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -26,6 +27,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import mvc.controller.Controlador;
+import mvc.model.Categoria;
+import mvc.model.Editorial;
 
 public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
@@ -78,9 +81,12 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 	private JTextField txtTitulo;
 	private JTextField txtPrecio;
 	private JTextField txtStock;
-	private JComboBox comboCategoria;
-	private JComboBox comboEditorial;
+	private JComboBox<String> comboCategoria;
+	private JComboBox<Editorial> comboEditorial;
 	
+	private DefaultComboBoxModel<Categoria> modeloComboCategoria;
+	private DefaultComboBoxModel<Editorial> modeloComboEditorial;
+
 	private JTabbedPane tabs;
 
 	private Dimension tamanoMarcoRequerido;
@@ -123,7 +129,9 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 				return false;
 			}
 		};
-
+		
+		cargarComboCategoria();
+		
 		tablaLibros = new JTable(modeloTablaLibros);
 		tablaLibroAutor = new JTable(modeloTablaLibroAutor);
 		tablaAutores = new JTable(modeloTablaAutores);
@@ -155,8 +163,6 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		panelBotonesCRUD.add(editar);
 		panelBotonesCRUD.add(borrar);
 		panelBotonesCRUD.add(nuevo);
-		
-		restablecerPanelCRUD();
 
 		panelLibros = new JPanel(new BorderLayout());
 		panelLibros.add(scrollTablaLibros, BorderLayout.CENTER);
@@ -185,16 +191,16 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 		panelTabAutores.add(panelLibroAutor, BorderLayout.CENTER);
 		panelTabAutores.add(panelAutores, BorderLayout.SOUTH);
-		panelTabAutores.setPreferredSize(new Dimension(600,260));
+		panelTabAutores.setPreferredSize(new Dimension(600, 260));
 
 		// pestaña nuevo libro
 		panelTabNuevoLibro = new JPanel(new BorderLayout());
-		panelTabNuevoLibro.setPreferredSize(new Dimension(600,260));
+		panelTabNuevoLibro.setPreferredSize(new Dimension(600, 260));
 
-		//paneles pestaña nuevo libro
+		// paneles pestaña nuevo libro
 		panelFormulario = new JPanel(new GridLayout(12, 1));
-		panelBotonesFormulario = new JPanel(new GridLayout(4,1));
-		
+		panelBotonesFormulario = new JPanel(new GridLayout(4, 1));
+
 		// etiquetas para el formulario
 		etiquetaIsbn = new JLabel("ISBN");
 		etiquetaTitulo = new JLabel("Titulo");
@@ -209,14 +215,14 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		txtStock = new JTextField();
 		comboCategoria = new JComboBox();
 		comboEditorial = new JComboBox();
-		
-		//botones del formulario
+
+		// botones del formulario
 		cancelar = new JButton("Cancelar");
 		aceptar = new JButton("Aceptar");
 		limpiar = new JButton("Limpiar");
 		recargarListas = new JButton("Recargar listas");
 
-		//añadir los componentes a los paneles
+		// añadir los componentes a los paneles
 		panelFormulario.add(etiquetaIsbn);
 		panelFormulario.add(txtIsbn);
 		panelFormulario.add(etiquetaTitulo);
@@ -229,12 +235,12 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		panelFormulario.add(comboCategoria);
 		panelFormulario.add(etiquetaEditorial);
 		panelFormulario.add(comboEditorial);
-		
+
 		panelBotonesFormulario.add(cancelar);
 		panelBotonesFormulario.add(aceptar);
 		panelBotonesFormulario.add(limpiar);
 		panelBotonesFormulario.add(recargarListas);
-		
+
 		panelTabNuevoLibro.add(panelFormulario, BorderLayout.CENTER);
 		panelTabNuevoLibro.add(panelBotonesFormulario, BorderLayout.EAST);
 
@@ -246,9 +252,13 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		panelCentral.add(panelLibros, BorderLayout.CENTER);
 		panelCentral.add(tabs, BorderLayout.SOUTH);
 
-		//se añaden los listeners a los controles
+		restablecerPanelBotones();
+
+		// se añaden los listeners a los controles
 		nuevo.addActionListener(this);
-		
+		editar.addActionListener(this);
+		borrar.addActionListener(this);
+
 		// cambia el tamaño de la ventana
 		tamanoMarcoRequerido = new Dimension(710, 500);
 		ventana.setSize(tamanoMarcoRequerido);
@@ -262,7 +272,8 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		// controlador.getClass().getMethod("obtenerDatosMasMetadatosLibro"), 0);
 		// en el catch: noSuchMethodException
 
-		// cargarDatosEnTabla(modeloTabla);
+		cargarDatosEnTablaLibro(modeloTablaLibros);
+		cargarDatosEnTablaAutor(modeloTablaAutores);
 
 	}
 
@@ -274,7 +285,7 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 	// mousePressed()
 	// String componenteOrigen = getClass().getName()
-	public void cargarDatosEnTabla(DefaultTableModel modelo) {
+	public void cargarDatosEnTablaLibro(DefaultTableModel modelo) {
 		try {
 			ResultSet datos = controlador.obtenerDatosMasMetadatosLibro();
 			ResultSetMetaData metadatos = datos.getMetaData();
@@ -297,24 +308,70 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 	}
 
+	public void cargarDatosEnTablaAutorLibro(DefaultTableModel modelo) {
+		modelo.setRowCount(0);
+		modelo.setColumnCount(0);
+		try {
+			int isbn = (int) tablaLibros.getValueAt(tablaLibros.getSelectedRow(), 0);
+			ResultSet datos = controlador.obtenerDatosMasMetadatosAutorLibro(isbn);
+			ResultSetMetaData metadatos = datos.getMetaData();
+
+			for (int col = 1; col <= metadatos.getColumnCount(); col++) {
+				modelo.addColumn(metadatos.getColumnLabel(col));
+			}
+
+			while (datos.next()) {
+				Object[] fila = new Object[metadatos.getColumnCount()];
+				for (int col = 0; col < metadatos.getColumnCount(); col++) {
+					fila[col] = datos.getObject(col + 1);
+				}
+				modelo.addRow(fila);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void cargarDatosEnTablaAutor(DefaultTableModel modelo) {
+		try {
+			ResultSet datos = controlador.obtenerDatosMasMetadatosAutor();
+			ResultSetMetaData metadatos = datos.getMetaData();
+
+			for (int col = 1; col <= metadatos.getColumnCount(); col++) {
+				modelo.addColumn(metadatos.getColumnLabel(col));
+			}
+
+			while (datos.next()) {
+				Object[] fila = new Object[metadatos.getColumnCount()];
+				for (int col = 0; col < metadatos.getColumnCount(); col++) {
+					fila[col] = datos.getObject(col + 1);
+				}
+				modelo.addRow(fila);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void cargarComboCategoria() {
+		Vector<Categoria> listaCategorias = controlador.listCategories();
+		modeloComboCategoria = new DefaultComboBoxModel<Categoria>(listaCategorias);
+		comboCategoria = new JComboBox<String>();
+		for (Categoria categoria : listaCategorias) {
+			comboCategoria.addItem(categoria.getNombreCategoria());
+		}
+	}
+
 	// UTILITIES
 	// Restablece/habilita/deshabilita el panel CRUD
-	private void restablecerPanelCRUD() {
+	private void restablecerPanelBotones() {
 		editar.setEnabled(false);
 		borrar.setEnabled(false);
 		nuevo.setEnabled(true);
-	}
-
-	private void habilitarPanelCRUD() {
-		editar.setEnabled(true);
-		borrar.setEnabled(true);
-		nuevo.setEnabled(true);
-	}
-
-	private void deshabilitarPanelCRUD() {
-		editar.setEnabled(false);
-		borrar.setEnabled(false);
-		nuevo.setEnabled(false);
+		quitarAutor.setEnabled(false);
+		anadirAutor.setEnabled(false);
+		recargarAutores.setEnabled(true);
 	}
 
 	public JPanel getPanelCentral() {
@@ -325,19 +382,67 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		return tamanoMarcoRequerido;
 	}
 
+	// metodo para informar al usuario
+		private void informarUsuario(String mensaje) {
+			JOptionPane.showMessageDialog(ventana, mensaje, tituloFuncion.getText(), JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		// metodo para preguntar al usuario
+		private int preguntarUsuario(String pregunta) {
+			int confirmacion = JOptionPane.showConfirmDialog(ventana, pregunta);
+			return confirmacion;
+		}
+	
+	// METODOS CRUD
+	// modifica el registro seleccionado
+	private void modificarRegistro() {
+		// String feedback = controlador.upd
+	}
+
+	// borra el regitro seleccionado
+	private void borrarRegistro() {
+		String pregunta = "Va a borrar el libro con isbn " + tablaLibros.getValueAt(tablaLibros.getSelectedRow(), 0)
+				+ "\n¿Está seguro?";
+		String feedback = "No se ha borrado el libro.";
+		if(preguntarUsuario(pregunta) == JOptionPane.YES_OPTION) {
+			feedback = controlador.deleteBook((int)tablaLibros.getValueAt(tablaLibros.getSelectedRow(), 0));
+			if(feedback.equals("Borrado de libro correcto.")) {
+				modeloTablaLibros.removeRow(tablaLibros.getSelectedRow());
+			}
+		}
+		informarUsuario(feedback);
+	}
+	
+	private void registrarNuevo() {
+		
+	}
+
 	// EVENTO CUANDO SE SELECCIONA ALGO EN LA TABLA
 	@Override
-	public void valueChanged(ListSelectionEvent arg0) {
+	public void valueChanged(ListSelectionEvent lse) {
+		if (tablaLibros.getSelectedRow() != -1) {
+			cargarDatosEnTablaAutorLibro(modeloTablaLibroAutor);
+			editar.setEnabled(true);
+			borrar.setEnabled(true);
+		} else {
+			editar.setEnabled(false);
+			borrar.setEnabled(false);
+		}
 
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if(ae.getActionCommand().equals("Nuevo")) {
+		switch (ae.getActionCommand()) {
+		case "Nuevo":
 			tabs.setSelectedIndex(1);
+			break;
+		case "Borrar":
+			borrarRegistro();
+			break;
+		default:
+			break;
 		}
 	}
-	
-	
 
 }

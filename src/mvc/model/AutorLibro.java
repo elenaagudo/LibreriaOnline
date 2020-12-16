@@ -112,4 +112,19 @@ public class AutorLibro {
 		return autoresLibro;
 	}
 
+	/*
+	 * Ampliacion para Swing
+	 * 
+	 */
+	
+	public static ResultSet obtenerDatosMasMetadatosAutorLibro(int isbn) {
+		try {
+			String sql = "select a.cod_autor as 'CODIGO', a.nombre as 'NOMBRE' from autor_libro al, autor a where al.cod_autor=a.cod_autor and isbn="+isbn;
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultado;
+	}
+	
 }

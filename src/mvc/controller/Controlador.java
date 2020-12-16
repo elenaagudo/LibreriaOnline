@@ -257,5 +257,10 @@ public class Controlador {
 		ResultSet resultado = modelo.obtenerDatosMasMetadatosLibro();
 		return resultado;
 	}
+	
+	public ResultSet obtenerDatosMasMetadatosAutorLibro(int isbn) {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosAutorLibro(isbn);
+		return resultado;
+	}
 
 }

@@ -96,6 +96,15 @@ public class Libro {
 		}
 		return (retorno > 0) ? "Registro de libro correcto." : "No ha sido posible registrar el libro.";
 	}
+	
+//	public String update(int isbnNuevo) {
+//		try {
+//			String sql = "update libro set isbn=";
+//		} catch (SQLException e) {
+//			// TODO: handle exception
+//		}
+//		return (retorno > 0) ? "Edición del libro correcta." : "No ha sido posible editar el libro.";
+//	}
 
 	// UPDATE isbn
 	public String updateIsbn(int isbnNuevo) {
@@ -173,7 +182,7 @@ public class Libro {
 			String sql = "delete from libro where isbn=" + getIsbn();
 			retorno = sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = 0;
 		}
 		return (retorno > 0) ? "Borrado de libro correcto." : "No ha sido posible borrar el libro.";
 	}
