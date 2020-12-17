@@ -52,7 +52,7 @@ public class AutorLibro {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Registro de autor_libro correcto." : "No ha sido posible registrar el autor_libro.";
+		return (retorno > 0) ? "Se ha añadido el autor del libro." : "No ha sido posible añadir el autor del libro.";
 	}
 
 	// DELETE
@@ -63,7 +63,7 @@ public class AutorLibro {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (retorno > 0) ? "Borrado de autor_libro correcto." : "No ha sido posible borrar el autor_libro.";
+		return (retorno > 0) ? "Se ha quitado el autor del libro." : "No ha sido posible quitar el autor del libro.";
 	}
 
 	// READ
@@ -116,15 +116,16 @@ public class AutorLibro {
 	 * Ampliacion para Swing
 	 * 
 	 */
-	
+
 	public static ResultSet obtenerDatosMasMetadatosAutorLibro(int isbn) {
 		try {
-			String sql = "select a.cod_autor as 'CODIGO', a.nombre as 'NOMBRE' from autor_libro al, autor a where al.cod_autor=a.cod_autor and isbn="+isbn;
+			String sql = "select a.cod_autor as 'CODIGO', a.nombre as 'NOMBRE' from autor_libro al, autor a where al.cod_autor=a.cod_autor and isbn="
+					+ isbn;
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return resultado;
 	}
-	
+
 }

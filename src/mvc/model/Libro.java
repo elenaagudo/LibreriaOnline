@@ -92,19 +92,22 @@ public class Libro {
 					+ getCodigoCategoria() + "," + getCodigoEditorial() + ")";
 			retorno = sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			retorno = 0;
 		}
 		return (retorno > 0) ? "Registro de libro correcto." : "No ha sido posible registrar el libro.";
 	}
-	
-//	public String update(int isbnNuevo) {
-//		try {
-//			String sql = "update libro set isbn=";
-//		} catch (SQLException e) {
-//			// TODO: handle exception
-//		}
-//		return (retorno > 0) ? "Edición del libro correcta." : "No ha sido posible editar el libro.";
-//	}
+
+	public String update(int isbnNuevo) {
+		try {
+			String sql = "update libro set isbn=" + isbnNuevo + ", titulo='" + getTitulo() + "', precio=" + getPrecio()
+					+ ", stock=" + getStock() + ", cod_categoria=" + getCodigoCategoria() + ", cod_editorial="
+					+ getCodigoEditorial() + " where isbn=" + getIsbn();
+			retorno = sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return (retorno > 0) ? "Edición del libro correcta." : "No ha sido posible editar el libro.";
+	}
 
 	// UPDATE isbn
 	public String updateIsbn(int isbnNuevo) {
@@ -184,7 +187,8 @@ public class Libro {
 		} catch (SQLException e) {
 			retorno = 0;
 		}
-		return (retorno > 0) ? "Borrado de libro correcto." : "No ha sido posible borrar el libro.";
+		return (retorno > 0) ? "Borrado de libro correcto."
+				: "No se puede borrar un libro que tiene autores asignados.\nPor favor, para borrar el libro quitale los autores";
 	}
 
 	// READ
@@ -280,7 +284,7 @@ public class Libro {
 	 */
 	public static ResultSet obtenerDatosMasMetadatosLibro() {
 		try {
-			String sql = "select isbn as 'ISBN', titulo as 'TITULO', precio as 'PRECIO', stock as 'STOCK', c.nombre as 'CATEGORIA', e.nombre as 'EDITORIAL' from libro l, editorial e, categoria c where l.cod_editorial=e.cod_editorial and l.cod_categoria=c.cod_categoria";
+			String sql = "select isbn as 'ISBN', titulo as 'TITULO', precio as 'PRECIO', stock as 'STOCK', c.nombre as 'CATEGORIA', e.nombre as 'EDITORIAL' from libro l, editorial e, categoria c where l.cod_editorial=e.cod_editorial and l.cod_categoria=c.cod_categoria order by isbn";
 			resultado = sentencia.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();

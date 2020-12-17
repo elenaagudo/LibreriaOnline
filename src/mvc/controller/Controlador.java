@@ -63,6 +63,11 @@ public class Controlador {
 		ResultSet resultado = modelo.obtenerDatosMasMetadatosAutor();
 		return resultado;
 	}
+	
+	public ResultSet obtenerDatosMasMetadatosAutorExcluir(int isbn) {
+		ResultSet resultado = modelo.obtenerDatosMasMetadatosAutorExcluir(isbn);
+		return resultado;
+	}
 
 	/*
 	 * EDITORIALES
@@ -141,6 +146,12 @@ public class Controlador {
 	public String insertBook(int isbn, String titulo, double precio, int stock, int codigoCategoria,
 			int codigoEditorial) {
 		feedback = modelo.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial);
+		return feedback;
+	}
+	
+	//UPDATE book
+	public String updateBook(int isbn, int isbnNuevo, String titulo, double precio, int stock, int codigoCategoria, int codigoEditorial) {
+		feedback = modelo.updateBook(isbn, isbnNuevo, titulo, precio, stock, codigoCategoria, codigoEditorial);
 		return feedback;
 	}
 

@@ -146,4 +146,15 @@ public class Autor {
 		}
 		return resultado;
 	}
+
+	public static ResultSet obtenerDatosMasMetadatosAutorExcluir(int isbn) {
+		try {
+			String sql = "select cod_autor as 'CODIGO', nombre as 'NOMBRE' from autor where cod_autor not in (select cod_autor from autor_libro where isbn="
+					+ isbn + ")";
+			resultado = sentencia.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultado;
+	}
 }

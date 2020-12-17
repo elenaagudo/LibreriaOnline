@@ -208,10 +208,23 @@ public class Modelo {
 		feedback = libro.insert();
 		return feedback;
 	}
+	
+	//UPDATE
+	public String updateBook(int isbn, int isbnNuevo, String titulo, double precio, int stock, int codigoCategoria, int codigoEditorial) {
+		libros = Libro.searchByIsbn(isbn);
+		libro = libros.get(0);
+		libro.setIsbn(isbn);
+		libro.setTitulo(titulo);
+		libro.setPrecio(precio);
+		libro.setStock(stock);
+		libro.setCodigoCategoria(codigoCategoria);
+		libro.setCodigoEditorial(codigoEditorial);
+		feedback = libro.update(isbnNuevo);
+		return feedback;
+	}
 
 	// UPDATE isbn
 	public String updateBookIsbn(int isbn, int isbnNuevo) {
-
 		libros = Libro.searchByIsbn(isbn);
 		libro = libros.get(0);
 		feedback = libro.updateIsbn(isbnNuevo);
@@ -290,7 +303,7 @@ public class Modelo {
 			libro = libros.get(0);
 			feedback = libro.delete();
 		} catch (ArrayIndexOutOfBoundsException e) {
-			feedback = "No existe una libro con ese isbn\n";
+			feedback = "No existe un libro con ese isbn\n";
 		}
 		return feedback;
 	}
@@ -373,6 +386,11 @@ public class Modelo {
 	
 	public ResultSet obtenerDatosMasMetadatosAutorLibro(int isbn) {
 		resultado = AutorLibro.obtenerDatosMasMetadatosAutorLibro(isbn);
+		return resultado;
+	}
+	
+	public ResultSet obtenerDatosMasMetadatosAutorExcluir(int isbn) {
+		resultado = Autor.obtenerDatosMasMetadatosAutorExcluir(isbn);
 		return resultado;
 	}
 }
