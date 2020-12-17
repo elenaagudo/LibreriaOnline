@@ -81,11 +81,14 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 	private JTextField txtTitulo;
 	private JTextField txtPrecio;
 	private JTextField txtStock;
-	private JComboBox<String> comboCategoria;
+	private JComboBox<Categoria> comboCategoria;
 	private JComboBox<Editorial> comboEditorial;
 	
 	private DefaultComboBoxModel<Categoria> modeloComboCategoria;
 	private DefaultComboBoxModel<Editorial> modeloComboEditorial;
+	
+	private Vector<Categoria> listaCategorias;
+	private Vector<Editorial> listaEditoriales;
 
 	private JTabbedPane tabs;
 
@@ -129,8 +132,6 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 				return false;
 			}
 		};
-		
-		cargarComboCategoria();
 		
 		tablaLibros = new JTable(modeloTablaLibros);
 		tablaLibroAutor = new JTable(modeloTablaLibroAutor);
@@ -213,8 +214,8 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		txtTitulo = new JTextField();
 		txtPrecio = new JTextField();
 		txtStock = new JTextField();
-		comboCategoria = new JComboBox();
-		comboEditorial = new JComboBox();
+		comboCategoria = new JComboBox<Categoria>();
+		comboEditorial = new JComboBox<Editorial>();
 
 		// botones del formulario
 		cancelar = new JButton("Cancelar");
@@ -252,12 +253,14 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		panelCentral.add(panelLibros, BorderLayout.CENTER);
 		panelCentral.add(tabs, BorderLayout.SOUTH);
 
+		cargarCombos();
 		restablecerPanelBotones();
 
 		// se añaden los listeners a los controles
 		nuevo.addActionListener(this);
 		editar.addActionListener(this);
 		borrar.addActionListener(this);
+		aceptar.addActionListener(this);
 
 		// cambia el tamaño de la ventana
 		tamanoMarcoRequerido = new Dimension(710, 500);
@@ -272,8 +275,8 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 		// controlador.getClass().getMethod("obtenerDatosMasMetadatosLibro"), 0);
 		// en el catch: noSuchMethodException
 
-		cargarDatosEnTablaLibro(modeloTablaLibros);
-		cargarDatosEnTablaAutor(modeloTablaAutores);
+		cargarDatosEnTablaLibro();
+		cargarDatosEnTablaAutor();
 
 	}
 
@@ -285,13 +288,15 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 	// mousePressed()
 	// String componenteOrigen = getClass().getName()
-	public void cargarDatosEnTablaLibro(DefaultTableModel modelo) {
+	public void cargarDatosEnTablaLibro() {
+		modeloTablaLibros.setRowCount(0);
+		modeloTablaLibros.setColumnCount(0);
 		try {
 			ResultSet datos = controlador.obtenerDatosMasMetadatosLibro();
 			ResultSetMetaData metadatos = datos.getMetaData();
 
 			for (int col = 1; col <= metadatos.getColumnCount(); col++) {
-				modelo.addColumn(metadatos.getColumnLabel(col));
+				modeloTablaLibros.addColumn(metadatos.getColumnLabel(col));
 			}
 
 			while (datos.next()) {
@@ -299,7 +304,7 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 				for (int col = 0; col < metadatos.getColumnCount(); col++) {
 					fila[col] = datos.getObject(col + 1);
 				}
-				modelo.addRow(fila);
+				modeloTablaLibros.addRow(fila);
 			}
 
 		} catch (SQLException e) {
@@ -308,16 +313,16 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 	}
 
-	public void cargarDatosEnTablaAutorLibro(DefaultTableModel modelo) {
-		modelo.setRowCount(0);
-		modelo.setColumnCount(0);
+	public void cargarDatosEnTablaAutorLibro() {
+		modeloTablaLibroAutor.setRowCount(0);
+		modeloTablaLibroAutor.setColumnCount(0);
 		try {
 			int isbn = (int) tablaLibros.getValueAt(tablaLibros.getSelectedRow(), 0);
 			ResultSet datos = controlador.obtenerDatosMasMetadatosAutorLibro(isbn);
 			ResultSetMetaData metadatos = datos.getMetaData();
 
 			for (int col = 1; col <= metadatos.getColumnCount(); col++) {
-				modelo.addColumn(metadatos.getColumnLabel(col));
+				modeloTablaLibroAutor.addColumn(metadatos.getColumnLabel(col));
 			}
 
 			while (datos.next()) {
@@ -325,7 +330,7 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 				for (int col = 0; col < metadatos.getColumnCount(); col++) {
 					fila[col] = datos.getObject(col + 1);
 				}
-				modelo.addRow(fila);
+				modeloTablaLibroAutor.addRow(fila);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -333,13 +338,15 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 
 	}
 
-	public void cargarDatosEnTablaAutor(DefaultTableModel modelo) {
+	public void cargarDatosEnTablaAutor() {
+		modeloTablaAutores.setRowCount(0);
+		modeloTablaAutores.setColumnCount(0);
 		try {
 			ResultSet datos = controlador.obtenerDatosMasMetadatosAutor();
 			ResultSetMetaData metadatos = datos.getMetaData();
 
 			for (int col = 1; col <= metadatos.getColumnCount(); col++) {
-				modelo.addColumn(metadatos.getColumnLabel(col));
+				modeloTablaAutores.addColumn(metadatos.getColumnLabel(col));
 			}
 
 			while (datos.next()) {
@@ -347,20 +354,21 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 				for (int col = 0; col < metadatos.getColumnCount(); col++) {
 					fila[col] = datos.getObject(col + 1);
 				}
-				modelo.addRow(fila);
+				modeloTablaAutores.addRow(fila);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void cargarComboCategoria() {
-		Vector<Categoria> listaCategorias = controlador.listCategories();
+	public void cargarCombos() {
+		listaCategorias = controlador.listCategories();
 		modeloComboCategoria = new DefaultComboBoxModel<Categoria>(listaCategorias);
-		comboCategoria = new JComboBox<String>();
-		for (Categoria categoria : listaCategorias) {
-			comboCategoria.addItem(categoria.getNombreCategoria());
-		}
+		comboCategoria.setModel(modeloComboCategoria);
+		
+		listaEditoriales = controlador.listEditorials();
+		modeloComboEditorial = new DefaultComboBoxModel<Editorial>(listaEditoriales);
+		comboEditorial.setModel(modeloComboEditorial);
 	}
 
 	// UTILITIES
@@ -414,6 +422,24 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 	}
 	
 	private void registrarNuevo() {
+		if(!txtIsbn.getText().equals("") && !txtTitulo.getText().equals("") && !txtPrecio.getText().equals("") && !txtStock.getText().equals("")) {
+			try {
+				int isbn = Integer.parseInt(txtIsbn.getText());
+				String titulo = txtTitulo.getText();
+				double precio = Double.parseDouble(txtPrecio.getText());
+				int stock = Integer.parseInt(txtStock.getText());
+				Categoria categoria = (Categoria) comboCategoria.getSelectedItem();
+				Editorial editorial = (Editorial) comboEditorial.getSelectedItem();
+				int codigoCategoria = categoria.getCodigoCategoria();
+				int codigoEditorial = editorial.getCodigoEditorial();
+				informarUsuario(controlador.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial));
+				cargarDatosEnTablaLibro();
+			} catch (Exception e) {
+				informarUsuario("Introduce tipos de dato válidos");
+			}
+		} else {
+			informarUsuario("Rellena todos los campos para registrar un nuevo libro");
+		}
 		
 	}
 
@@ -421,7 +447,7 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 	@Override
 	public void valueChanged(ListSelectionEvent lse) {
 		if (tablaLibros.getSelectedRow() != -1) {
-			cargarDatosEnTablaAutorLibro(modeloTablaLibroAutor);
+			cargarDatosEnTablaAutorLibro();
 			editar.setEnabled(true);
 			borrar.setEnabled(true);
 		} else {
@@ -439,6 +465,12 @@ public class VistaLibroSwing implements ListSelectionListener, ActionListener {
 			break;
 		case "Borrar":
 			borrarRegistro();
+			break;
+		case "Aceptar":
+			registrarNuevo();
+			break;
+		case "Editar":
+			modificarRegistro();
 			break;
 		default:
 			break;

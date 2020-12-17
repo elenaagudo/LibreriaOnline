@@ -35,6 +35,11 @@ public class Editorial {
 		this.nombreEditorial = nombreEditorial;
 	}
 
+	@Override
+	public String toString() {
+		return nombreEditorial;
+	}
+
 	// INTEGRACION CON LA BBDD
 	private static Statement sentencia;
 	private static ResultSet resultado;
@@ -131,7 +136,7 @@ public class Editorial {
 		}
 		return editoriales;
 	}
-	
+
 	public static ResultSet obtenerDatosMasMetadatosEditorial() {
 		try {
 			String sql = "select cod_editorial as 'CODIGO', nombre as 'NOMBRE' from editorial";

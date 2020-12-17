@@ -273,6 +273,8 @@ public class VistaMenuSwing implements WindowListener, ActionListener {
 			} else {
 				ventana.add(panelLibro.getPanelCentral(), BorderLayout.CENTER);
 				ventana.setSize(panelLibro.getTamanoMarcoRequerido());
+				panelLibro.cargarCombos();
+				panelLibro.cargarDatosEnTablaAutor();
 				ventana.validate();
 				ventana.repaint();
 			}
