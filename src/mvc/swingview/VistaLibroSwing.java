@@ -25,6 +25,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import mvc.controller.Controlador;
@@ -248,13 +250,17 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 		tabs.add("Autores", panelTabAutores);
 		tabs.add("Nuevo libro", panelTabNuevoLibro);
 
+		deshabilitarPanelNuevoLibro();
+
 		panelCentral = new JPanel(new BorderLayout());
 		panelCentral.add(tituloFuncion, BorderLayout.NORTH);
 		panelCentral.add(panelLibros, BorderLayout.CENTER);
 		panelCentral.add(tabs, BorderLayout.SOUTH);
 
 		cargarCombos();
-		restablecerPanelBotones();
+		restablecerPanelBotonesCRUD();
+		deshabilitarPanelBotonesAutores();
+		deshabilitarPanelBotonesNuevo();
 
 		// se añaden los listeners a los controles
 		nuevo.addActionListener(this);
@@ -274,23 +280,12 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 
 		ventana.validate();
 		ventana.repaint();
-		// obtenerDatosParaTabla(modeloTablaLibro,
-		// controlador.getClass().getMethod("obtenerDatosMasMetadatosLibro"), 0);
-		// en el catch: noSuchMethodException
 
 		cargarDatosEnTablaLibro();
 		cargarDatosEnTablaAutor();
 
 	}
 
-	// obtenerDatosParaTabla(DefaultTableModel modeloTabla, Method metodo, int
-	// parametroMetodo)
-	// obtenerDatosParaLista(DefaultComboBoxModel<String> modeloLista, Method
-	// metodo)
-	// Vector<?> resultado = null;
-
-	// mousePressed()
-	// String componenteOrigen = getClass().getName()
 	public void cargarDatosEnTablaLibro() {
 		modeloTablaLibros.setRowCount(0);
 		modeloTablaLibros.setColumnCount(0);
@@ -370,7 +365,7 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 		modeloTablaAutores.setRowCount(0);
 		modeloTablaAutores.setColumnCount(0);
 		try {
-			
+
 			int isbn = (int) tablaLibros.getValueAt(tablaLibros.getSelectedRow(), 0);
 			ResultSet datos = controlador.obtenerDatosMasMetadatosAutorExcluir(isbn);
 
@@ -414,12 +409,66 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 	}
 
 	// Restablece/habilita/deshabilita el panel CRUD
-	private void restablecerPanelBotones() {
+	private void restablecerPanelBotonesCRUD() {
 		editar.setEnabled(false);
 		borrar.setEnabled(false);
 		nuevo.setEnabled(true);
+	}
+
+	private void habilitarPanelBotonesCRUD() {
+		editar.setEnabled(true);
+		borrar.setEnabled(true);
+		nuevo.setEnabled(true);
+	}
+
+	private void deshabilitarPanelBotonesCRUD() {
+		editar.setEnabled(false);
+		borrar.setEnabled(false);
+		nuevo.setEnabled(false);
+	}
+	
+	private void habilitarPanelBotonesAutores() {
+		quitarAutor.setEnabled(true);
+		anadirAutor.setEnabled(true);
+	}
+	
+	private void deshabilitarPanelBotonesAutores() {
 		quitarAutor.setEnabled(false);
 		anadirAutor.setEnabled(false);
+	}
+
+	private void habilitarPanelBotonesNuevo() {
+		cancelar.setEnabled(true);
+		aceptar.setEnabled(true);
+		limpiar.setEnabled(true);
+	}
+
+	private void deshabilitarPanelBotonesNuevo() {
+		cancelar.setEnabled(false);
+		aceptar.setEnabled(false);
+		limpiar.setEnabled(false);
+	}
+
+	private void deshabilitarPanelNuevoLibro() {
+		txtIsbn.setText("");
+		txtIsbn.setEnabled(false);
+		txtTitulo.setText("");
+		txtTitulo.setEnabled(false);
+		txtPrecio.setText("");
+		txtPrecio.setEnabled(false);
+		txtStock.setText("");
+		txtStock.setEnabled(false);
+		comboCategoria.setEnabled(false);
+		comboEditorial.setEnabled(false);
+	}
+
+	private void habilitarPanelNuevoLibro() {
+		txtIsbn.setEnabled(true);
+		txtTitulo.setEnabled(true);
+		txtPrecio.setEnabled(true);
+		txtStock.setEnabled(true);
+		comboCategoria.setEnabled(true);
+		comboEditorial.setEnabled(true);
 	}
 
 	public JPanel getPanelCentral() {
@@ -477,19 +526,36 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 	// METODOS CRUD
 	// modifica el registro seleccionado
 	private void modificarRegistro() {
-		int isbnNuevo = Integer.parseInt(txtIsbn.getText());
-		String titulo = txtTitulo.getText();
-		double precio = Double.parseDouble(txtPrecio.getText());
-		int stock = Integer.parseInt(txtStock.getText());
-		Categoria categoria = (Categoria) comboCategoria.getSelectedItem();
-		int codigoCategoria = categoria.getCodigoCategoria();
-		Editorial editorial = (Editorial) comboEditorial.getSelectedItem();
-		int codigoEditorial = editorial.getCodigoEditorial();
-		String feedback = controlador.updateBook(isbnAUX, isbnNuevo, titulo, precio, stock, codigoCategoria,
-				codigoEditorial);
-		informarUsuario(feedback);
-		cargarDatosEnTablaLibro();
-		restablecerPanelBotones();
+		int isbnNuevo = 0;
+		if (!txtIsbn.getText().equals("") && !txtTitulo.getText().equals("") && !txtPrecio.getText().equals("")
+				&& !txtStock.getText().equals("")) {
+			try {
+				isbnNuevo = Integer.parseInt(txtIsbn.getText());
+				String titulo = txtTitulo.getText();
+				double precio = Double.parseDouble(txtPrecio.getText());
+				int stock = Integer.parseInt(txtStock.getText());
+				Categoria categoria = (Categoria) comboCategoria.getSelectedItem();
+				int codigoCategoria = categoria.getCodigoCategoria();
+				Editorial editorial = (Editorial) comboEditorial.getSelectedItem();
+				int codigoEditorial = editorial.getCodigoEditorial();
+				String feedback = controlador.updateBook(isbnAUX, isbnNuevo, titulo, precio, stock, codigoCategoria,
+						codigoEditorial);
+				informarUsuario(feedback);
+				cargarDatosEnTablaLibro();
+				restablecerPanelBotonesCRUD();
+				tablaLibros.setEnabled(true);
+				deshabilitarPanelNuevoLibro();
+				deshabilitarPanelBotonesNuevo();
+				modeloTablaLibroAutor.setColumnCount(0);
+				modeloTablaLibroAutor.setRowCount(0);
+				cargarDatosEnTablaAutor();
+			} catch (Exception e) {
+				informarUsuario("Introduce tipos de dato válidos");
+			}
+		} else {
+			informarUsuario("Rellena todos los campos para modificar el libro");
+		}
+		
 	}
 
 	// borra el registro seleccionado
@@ -508,7 +574,7 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 		cargarDatosEnTablaAutor();
 		modeloTablaLibroAutor.setColumnCount(0);
 		modeloTablaLibroAutor.setRowCount(0);
-		restablecerPanelBotones();
+		restablecerPanelBotonesCRUD();
 		informarUsuario(feedback);
 	}
 
@@ -527,6 +593,13 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 				informarUsuario(controlador.insertBook(isbn, titulo, precio, stock, codigoCategoria, codigoEditorial));
 				cargarDatosEnTablaLibro();
 				limpiarCampos();
+				restablecerPanelBotonesCRUD();
+				tablaLibros.setEnabled(true);
+				deshabilitarPanelNuevoLibro();
+				deshabilitarPanelBotonesNuevo();
+				modeloTablaLibroAutor.setColumnCount(0);
+				modeloTablaLibroAutor.setRowCount(0);
+				cargarDatosEnTablaAutor();
 			} catch (Exception e) {
 				informarUsuario("Introduce tipos de dato válidos");
 			}
@@ -563,7 +636,11 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 		switch (ae.getActionCommand()) {
 		case "Nuevo":
 			tabs.setSelectedIndex(1);
+			tablaLibros.setEnabled(false);
 			limpiarCampos();
+			habilitarPanelNuevoLibro();
+			deshabilitarPanelBotonesCRUD();
+			habilitarPanelBotonesNuevo();
 			modoEdicion = false;
 			break;
 		case "Borrar":
@@ -576,28 +653,39 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 			} else {
 				registrarNuevo();
 			}
+//			tablaLibros.setEnabled(true);
+//			deshabilitarPanelNuevoLibro();
+//			restablecerPanelBotonesCRUD();
+//			deshabilitarPanelBotonesNuevo();
 			break;
 		case "Editar":
 			tabs.setSelectedIndex(1);
-			
+			tablaLibros.setEnabled(false);
 			rellenarCampos();
+			habilitarPanelNuevoLibro();
+			habilitarPanelBotonesNuevo();
+			deshabilitarPanelBotonesCRUD();
 			modoEdicion = true;
 			break;
 		case "Cancelar":
+			tablaLibros.setEnabled(true);
 			limpiarCampos();
+			deshabilitarPanelNuevoLibro();
+			restablecerPanelBotonesCRUD();
+			deshabilitarPanelBotonesNuevo();
 			modoEdicion = false;
-			informarUsuario("Ahora puedes registrar un nuevo libro");
 			break;
 		case "Limpiar":
 			limpiarCampos();
 			modoEdicion = false;
-			informarUsuario("Ahora puedes registrar un nuevo libro");
 			break;
 		case "Quitar autor":
 			quitarAutor();
+			deshabilitarPanelBotonesAutores();
 			break;
 		case "Añadir autor":
 			anadirAutor();
+			deshabilitarPanelBotonesAutores();
 			break;
 		default:
 			break;
@@ -606,9 +694,10 @@ public class VistaLibroSwing implements ActionListener, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent me) {
-		if (me.getSource() == tablaLibros) {
+		if (me.getSource() == tablaLibros && tablaLibros.isEnabled()) {
 			cargarDatosEnTablaAutorLibro();
 			cargarDatosEnTablaAutorExcluir();
+			deshabilitarPanelBotonesAutores();
 			editar.setEnabled(true);
 			borrar.setEnabled(true);
 		} else if (me.getSource() == tablaLibroAutor) {
